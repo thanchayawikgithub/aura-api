@@ -20,11 +20,11 @@ type (
 	}
 
 	IStorage[T ModelType] interface {
-		FindByID(ctx context.Context, id T) (data T, err error)
+		FindByID(ctx context.Context, id uint) (data T, err error)
 		FindAll(ctx context.Context) (data []T, err error)
 		Insert(ctx context.Context, data T) error
 		Update(ctx context.Context, id uint, data T) error
-		Delete(ctx context.Context, id uint) error
+		Delete(ctx context.Context, data T) error
 	}
 
 	AbstractStorage[T ModelType] struct {
@@ -72,4 +72,24 @@ func New(cfg *config.Database) *Storage {
 func (s *AbstractStorage[T]) FindByID(ctx context.Context, id uint) (data T, err error) {
 	err = s.db.Table(s.tableName).WithContext(ctx).Where("id = ?", id).First(&data).Error
 	return data, err
+}
+
+func (s *AbstractStorage[T]) FindAll(ctx context.Context) (data []T, err error) {
+	err = s.db.Table(s.tableName).WithContext(ctx).Find(&data).Error
+	return data, err
+}
+
+func (s *AbstractStorage[T]) Insert(ctx context.Context, data T) error {
+	err := s.db.Table(s.tableName).WithContext(ctx).Create(&data).Error
+	return err
+}
+
+func (s *AbstractStorage[T]) Update(ctx context.Context, id uint, data T) error {
+	err := s.db.Table(s.tableName).WithContext(ctx).Where("id = ?", id).Updates(&data).Error
+	return err
+}
+
+func (s *AbstractStorage[T]) Delete(ctx context.Context, data T) error {
+	err := s.db.Table(s.tableName).WithContext(ctx).Delete(&data).Error
+	return err
 }

@@ -13,3 +13,12 @@ type (
 		AbstractStorage[*model.User]
 	}
 )
+
+func NewUserStorage(s *Storage) *UserStorage {
+	return &UserStorage{
+		AbstractStorage: AbstractStorage[*model.User]{
+			db:        s.db,
+			tableName: model.UserTableName,
+		},
+	}
+}
