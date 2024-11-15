@@ -1,6 +1,10 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"aura/auradomain"
+
+	"gorm.io/gorm"
+)
 
 const (
 	PostTableName = "post"
@@ -11,6 +15,15 @@ type Post struct {
 	Content string `gorm:"column:content"`
 	UserID  uint
 	User    User
+}
+
+func (p *Post) ToDomain() *auradomain.Post {
+	return &auradomain.Post{
+		ID:        p.ID,
+		Content:   p.Content,
+		UserID:    p.UserID,
+		CreatedAt: p.CreatedAt,
+	}
 }
 
 func (Post) TableName() string {

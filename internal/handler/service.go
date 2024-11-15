@@ -8,9 +8,14 @@ import (
 type (
 	Service struct {
 		UserStorage storage.IUserStorage
+		PostStorage storage.IPostStorage
 	}
 
 	UserService struct {
+		*Service
+	}
+
+	PostService struct {
 		*Service
 	}
 )
@@ -18,11 +23,18 @@ type (
 func New(s *storage.Storage, cfg *config.Config) *Service {
 	return &Service{
 		UserStorage: storage.NewUserStorage(s),
+		PostStorage: storage.NewPostStorage(s),
 	}
 }
 
 func NewUserService(service *Service) *UserService {
 	return &UserService{
+		Service: service,
+	}
+}
+
+func NewPostService(service *Service) *PostService {
+	return &PostService{
 		Service: service,
 	}
 }

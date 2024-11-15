@@ -22,7 +22,7 @@ type (
 	IStorage[T ModelType] interface {
 		FindByID(ctx context.Context, id uint) (data T, err error)
 		FindAll(ctx context.Context) (data []T, err error)
-		Insert(ctx context.Context, data T) error
+		Insert(ctx context.Context, data T) (result T, err error)
 		Update(ctx context.Context, id uint, data T) error
 		Delete(ctx context.Context, data T) error
 	}
@@ -66,6 +66,7 @@ func New(cfg *config.Database) *Storage {
 	db.SetMaxOpenConns(cfg.MaxOpenConns)
 	db.SetConnMaxLifetime(cfg.MaxLifeTime * time.Second)
 
+	conn.AutoMigrate(&model.User{}, &model.Post{})
 	return &Storage{db: conn}
 }
 
@@ -79,9 +80,9 @@ func (s *AbstractStorage[T]) FindAll(ctx context.Context) (data []T, err error) 
 	return data, err
 }
 
-func (s *AbstractStorage[T]) Insert(ctx context.Context, data T) error {
-	err := s.db.Table(s.tableName).WithContext(ctx).Create(&data).Error
-	return err
+func (s *AbstractStorage[T]) Insert(ctx context.Context, data T) (result T, err error) {
+	err = s.db.Table(s.tableName).WithContext(ctx).Create(&data).Scan(&result).Error
+	return result, err
 }
 
 func (s *AbstractStorage[T]) Update(ctx context.Context, id uint, data T) error {
