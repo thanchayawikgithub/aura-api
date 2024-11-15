@@ -2,13 +2,14 @@ package main
 
 import (
 	"aura/internal/config"
-	"fmt"
+	"aura/internal/storage"
 )
 
 func init() {
 	cfg := config.LoadConfig()
 
-	fmt.Println(cfg)
+	storage := storage.New(&cfg.Database)
+	_ = storage
 }
 
 func main() {

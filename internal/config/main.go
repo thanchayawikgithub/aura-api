@@ -11,16 +11,16 @@ import (
 
 type (
 	Config struct {
-		Server   server   `mapstructure:"server" validate:"required"`
-		Database database `mapstructure:"database" validate:"required"`
+		Server   Server   `mapstructure:"server" validate:"required"`
+		Database Database `mapstructure:"database" validate:"required"`
 	}
 
-	server struct {
+	Server struct {
 		Port        int    `mapstructure:"port" validate:"required"`
 		Environment string `mapstructure:"environment" validate:"required"`
 	}
 
-	database struct {
+	Database struct {
 		Host         string        `mapstructure:"host" validate:"required"`
 		Port         int           `mapstructure:"port" validate:"required"`
 		Name         string        `mapstructure:"name" validate:"required"`
