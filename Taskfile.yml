@@ -1,0 +1,23 @@
+version: "3"
+
+tasks:
+  build:
+    cmds:
+      - go build -o ./bin/aura ./cmd/aura/main.go
+
+  up:
+    cmds:
+      - docker compose up -d
+
+  run:
+    deps: [build]
+    cmds:
+      - ./bin/aura
+
+  dev:
+    cmds:
+      - air
+
+  test:
+    cmds:
+      - go test ./... -coverprofile=coverage.out && go tool cover -html=coverage.out
