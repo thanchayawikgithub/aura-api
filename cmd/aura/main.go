@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"time"
 
+	mdw "aura/internal/httpadapter/middleware"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -33,14 +35,19 @@ func main() {
 		return c.JSON(http.StatusOK, "OK")
 	})
 
+	mdwAuth := mdw.Auth(&cfg.JWT)
+
 	// Version 1
 	v1 := e.Group("/v1")
 
+	auth := v1.Group("/auth")
+	setUpAuth(auth, adapter)
+
 	user := v1.Group("/user")
-	setUpUser(user, adapter)
+	setUpUser(user, adapter, mdwAuth)
 
 	post := v1.Group("/post")
-	setUpPost(post, adapter)
+	setUpPost(post, adapter, mdwAuth)
 
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", cfg.Server.Port)))
 }
@@ -72,15 +79,20 @@ func setupMiddleware(e *echo.Echo) {
 	)
 }
 
-func setUpUser(e *echo.Group, adapter *httpadapter.Adapter) {
-	e.POST("", adapter.AddUser)
-	e.GET(pathParamUserID, adapter.GetUserByID)
+func setUpAuth(e *echo.Group, adapter *httpadapter.Adapter) {
+	e.POST("/login", adapter.Login)
+	e.POST("/logout", adapter.Logout)
 }
 
-func setUpPost(e *echo.Group, adapter *httpadapter.Adapter) {
-	e.POST("", adapter.AddPost)
-	e.GET(pathParamPostID, adapter.GetPostByID)
-	e.GET("/user"+pathParamUserID, adapter.GetPostsByUserID)
-	e.PATCH(pathParamPostID, adapter.EditPost)
-	e.DELETE(pathParamPostID, adapter.DeletePost)
+func setUpUser(e *echo.Group, adapter *httpadapter.Adapter, mdwAuth echo.MiddlewareFunc) {
+	e.POST("", adapter.AddUser)
+	e.GET(pathParamUserID, adapter.GetUserByID, mdwAuth)
+}
+
+func setUpPost(e *echo.Group, adapter *httpadapter.Adapter, mdwAuth echo.MiddlewareFunc) {
+	e.POST("", adapter.AddPost, mdwAuth)
+	e.GET(pathParamPostID, adapter.GetPostByID, mdwAuth)
+	e.GET("/user"+pathParamUserID, adapter.GetPostsByUserID, mdwAuth)
+	e.PATCH(pathParamPostID, adapter.EditPost, mdwAuth)
+	e.DELETE(pathParamPostID, adapter.DeletePost, mdwAuth)
 }

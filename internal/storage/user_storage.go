@@ -2,6 +2,7 @@ package storage
 
 import (
 	"aura/internal/model"
+	"context"
 
 	"github.com/stretchr/testify/mock"
 )
@@ -9,6 +10,7 @@ import (
 type (
 	IUserStorage interface {
 		IStorage[*model.User]
+		FindByEmail(ctx context.Context, email string) (result *model.User, err error)
 	}
 
 	UserStorage struct {
@@ -31,4 +33,9 @@ func NewUserStorage(s *Storage) *UserStorage {
 
 func NewMockUserStorage() *MockUserStorage {
 	return &MockUserStorage{}
+}
+
+func (s *UserStorage) FindByEmail(ctx context.Context, email string) (result *model.User, err error) {
+	err = s.db.WithContext(ctx).Where("email = ?", email).First(&result).Error
+	return result, err
 }

@@ -13,6 +13,7 @@ type (
 	Config struct {
 		Server   Server   `mapstructure:"server" validate:"required"`
 		Database Database `mapstructure:"database" validate:"required"`
+		JWT      JWT      `mapstructure:"jwt" validate:"required"`
 	}
 
 	Server struct {
@@ -30,6 +31,11 @@ type (
 		MaxIdleTime  time.Duration `mapstructure:"maxIdleTime" validate:"required"`
 		MaxOpenConns int           `mapstructure:"maxOpenConns" validate:"required"`
 		MaxLifeTime  time.Duration `mapstructure:"maxLifeTime" validate:"required"`
+	}
+
+	JWT struct {
+		SecretKey string        `mapstructure:"secretKey" validate:"required"`
+		ExpiresIn time.Duration `mapstructure:"expiresIn" validate:"required"`
 	}
 )
 
