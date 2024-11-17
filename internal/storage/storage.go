@@ -23,7 +23,7 @@ type (
 		FindByID(ctx context.Context, id uint) (data T, err error)
 		FindAll(ctx context.Context) (data []T, err error)
 		Save(ctx context.Context, data T) (T, error)
-		Update(ctx context.Context, id uint, data T) error
+		Update(ctx context.Context, id uint, data T) (T, error)
 		Delete(ctx context.Context, data T) error
 		WithPreload(preloads ...string) IStorage[T]
 	}
@@ -114,9 +114,9 @@ func (s *AbstractStorage[T]) Save(ctx context.Context, data T) (T, error) {
 	return data, err
 }
 
-func (s *AbstractStorage[T]) Update(ctx context.Context, id uint, data T) error {
-	err := s.db.Table(s.tableName).WithContext(ctx).Where("id = ?", id).Updates(&data).Error
-	return err
+func (s *AbstractStorage[T]) Update(ctx context.Context, id uint, data T) (T, error) {
+	err := s.db.Table(s.tableName).WithContext(ctx).Where("id = ?", id).Updates(&data).Scan(&data).Error
+	return data, err
 }
 
 func (s *AbstractStorage[T]) Delete(ctx context.Context, data T) error {

@@ -81,4 +81,6 @@ func setUpPost(e *echo.Group, adapter *httpadapter.Adapter) {
 	e.POST("", adapter.AddPost)
 	e.GET(pathParamPostID, adapter.GetPostByID)
 	e.GET("/user"+pathParamUserID, adapter.GetPostsByUserID)
+	e.PATCH(pathParamPostID, adapter.EditPost)
+	e.DELETE(pathParamPostID, adapter.DeletePost)
 }
