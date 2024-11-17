@@ -4,6 +4,8 @@ import (
 	"aura/internal/config"
 	"aura/internal/pkg/auth"
 	"aura/internal/pkg/response"
+	"aura/internal/util"
+	"context"
 	"log"
 
 	"github.com/labstack/echo/v4"
@@ -23,11 +25,16 @@ func Auth(config *config.JWT) echo.MiddlewareFunc {
 				return response.Unauthorized(c, err.Error())
 			}
 
-			// Set user info in context
-			c.Set("user_id", claims.UserID)
-			c.Set("email", claims.Email)
+			setContextValue(c, claims)
 
 			return next(c)
 		}
 	}
+}
+
+func setContextValue(c echo.Context, claims *auth.Claims) {
+	ctx := c.Request().Context()
+	ctx = context.WithValue(ctx, util.UserID, claims.UserID)
+	ctx = context.WithValue(ctx, util.UserEmail, claims.Email)
+	c.SetRequest(c.Request().WithContext(ctx))
 }

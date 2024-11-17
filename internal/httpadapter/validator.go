@@ -17,7 +17,7 @@ type CustomValidator struct {
 
 func NewCustomValidator() *CustomValidator {
 	v := validator.New()
-	err := v.RegisterValidation("nameValidator", nameValidator)
+	err := v.RegisterValidation("name", nameValidator)
 	if err != nil {
 		return &CustomValidator{
 			Validator: validator.New(),

@@ -55,3 +55,7 @@ func InternalServerError(c echo.Context, message string) error {
 	}
 	return Error(c, http.StatusInternalServerError, message)
 }
+
+func NoContent(c echo.Context) error {
+	return c.NoContent(http.StatusNoContent)
+}
