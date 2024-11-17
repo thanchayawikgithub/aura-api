@@ -26,6 +26,14 @@ func (p *Post) ToDomain() *auradomain.Post {
 	}
 }
 
+func ToPostList(posts []*Post) []*auradomain.Post {
+	result := make([]*auradomain.Post, len(posts))
+	for i, post := range posts {
+		result[i] = post.ToDomain()
+	}
+	return result
+}
+
 func (Post) TableName() string {
 	return PostTableName
 }

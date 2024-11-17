@@ -2,11 +2,13 @@ package storage
 
 import (
 	"aura/internal/model"
+	"context"
 )
 
 type (
 	IPostStorage interface {
 		IStorage[*model.Post]
+		FindByUserID(ctx context.Context, userID uint) (result []*model.Post, err error)
 	}
 
 	PostStorage struct {
@@ -21,4 +23,9 @@ func NewPostStorage(s *Storage) *PostStorage {
 			tableName: model.PostTableName,
 		},
 	}
+}
+
+func (s *PostStorage) FindByUserID(ctx context.Context, userID uint) (result []*model.Post, err error) {
+	err = s.db.WithContext(ctx).Where("user_id = ?", userID).Find(&result).Error
+	return result, err
 }

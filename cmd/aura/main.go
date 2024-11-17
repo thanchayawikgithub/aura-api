@@ -29,6 +29,10 @@ func main() {
 	e.Validator = httpadapter.NewCustomValidator()
 	setupMiddleware(e)
 
+	e.GET("/health", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, "OK")
+	})
+
 	// Version 1
 	v1 := e.Group("/v1")
 
@@ -76,4 +80,5 @@ func setUpUser(e *echo.Group, adapter *httpadapter.Adapter) {
 func setUpPost(e *echo.Group, adapter *httpadapter.Adapter) {
 	e.POST("", adapter.AddPost)
 	e.GET(pathParamPostID, adapter.GetPostByID)
+	e.GET("/user"+pathParamUserID, adapter.GetPostsByUserID)
 }

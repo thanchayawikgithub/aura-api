@@ -2,6 +2,8 @@ package storage
 
 import (
 	"aura/internal/model"
+
+	"github.com/stretchr/testify/mock"
 )
 
 type (
@@ -12,6 +14,10 @@ type (
 	UserStorage struct {
 		AbstractStorage[*model.User]
 	}
+
+	MockUserStorage struct {
+		mock.Mock
+	}
 )
 
 func NewUserStorage(s *Storage) *UserStorage {
@@ -21,4 +27,8 @@ func NewUserStorage(s *Storage) *UserStorage {
 			tableName: model.UserTableName,
 		},
 	}
+}
+
+func NewMockUserStorage() *MockUserStorage {
+	return &MockUserStorage{}
 }
