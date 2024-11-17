@@ -18,11 +18,12 @@ type Post struct {
 }
 
 func (p *Post) ToDomain() *auradomain.Post {
+
 	return &auradomain.Post{
 		ID:        p.ID,
 		Content:   p.Content,
-		UserID:    p.UserID,
 		CreatedAt: p.CreatedAt,
+		UserID:    p.UserID,
 	}
 }
 

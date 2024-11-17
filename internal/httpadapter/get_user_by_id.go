@@ -1,7 +1,7 @@
 package httpadapter
 
 import (
-	"net/http"
+	"aura/internal/pkg/response"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -10,13 +10,13 @@ import (
 func (a *Adapter) GetUserByID(c echo.Context) error {
 	userID, err := strconv.Atoi(c.Param("user_id"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
+		return response.BadRequest(c, err.Error())
 	}
 
-	res, err := a.userService.GetUserByID(c.Request().Context(), uint(userID))
+	result, err := a.userService.GetUserByID(c.Request().Context(), uint(userID))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
+		return response.InternalServerError(c, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return response.OK(c, result)
 }

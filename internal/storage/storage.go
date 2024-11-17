@@ -22,14 +22,16 @@ type (
 	IStorage[T ModelType] interface {
 		FindByID(ctx context.Context, id uint) (data T, err error)
 		FindAll(ctx context.Context) (data []T, err error)
-		Insert(ctx context.Context, data T) (result T, err error)
+		Save(ctx context.Context, data T) (T, error)
 		Update(ctx context.Context, id uint, data T) error
 		Delete(ctx context.Context, data T) error
+		WithPreload(preloads ...string) IStorage[T]
 	}
 
 	AbstractStorage[T ModelType] struct {
 		db        *gorm.DB
 		tableName string
+		preloads  []string
 	}
 
 	Storage struct {
@@ -70,19 +72,46 @@ func New(cfg *config.Database) *Storage {
 	return &Storage{db: conn}
 }
 
+func (s *AbstractStorage[T]) WithPreload(preloads ...string) IStorage[T] {
+	s.preloads = preloads
+	return s
+}
+
+// Modify FindByID to use preloads
 func (s *AbstractStorage[T]) FindByID(ctx context.Context, id uint) (data T, err error) {
-	err = s.db.Table(s.tableName).WithContext(ctx).Where("id = ?", id).First(&data).Error
+	query := s.db.Table(s.tableName).WithContext(ctx)
+	for _, preload := range s.preloads {
+		query = query.Preload(preload)
+	}
+	err = query.Where("id = ?", id).First(&data).Error
+	s.preloads = nil // Reset preloads after query
 	return data, err
 }
 
+// Modify FindAll to use preloads
 func (s *AbstractStorage[T]) FindAll(ctx context.Context) (data []T, err error) {
-	err = s.db.Table(s.tableName).WithContext(ctx).Find(&data).Error
+	query := s.db.Table(s.tableName).WithContext(ctx)
+	for _, preload := range s.preloads {
+		query = query.Preload(preload)
+	}
+	err = query.Find(&data).Error
+	s.preloads = nil // Reset preloads after query
 	return data, err
 }
 
-func (s *AbstractStorage[T]) Insert(ctx context.Context, data T) (result T, err error) {
-	err = s.db.Table(s.tableName).WithContext(ctx).Create(&data).Scan(&result).Error
-	return result, err
+// func (s *AbstractStorage[T]) FindByID(ctx context.Context, id uint) (data T, err error) {
+// 	err = s.db.Table(s.tableName).WithContext(ctx).Where("id = ?", id).First(&data).Error
+// 	return data, err
+// }
+
+// func (s *AbstractStorage[T]) FindAll(ctx context.Context) (data []T, err error) {
+// 	err = s.db.Table(s.tableName).WithContext(ctx).Find(&data).Error
+// 	return data, err
+// }
+
+func (s *AbstractStorage[T]) Save(ctx context.Context, data T) (T, error) {
+	err := s.db.Table(s.tableName).WithContext(ctx).Save(&data).Error
+	return data, err
 }
 
 func (s *AbstractStorage[T]) Update(ctx context.Context, id uint, data T) error {

@@ -14,7 +14,7 @@ func (s *UserService) AddUser(ctx context.Context, req *auraapi.AddUserReq) (*au
 		return nil, err
 	}
 
-	user, err := s.UserStorage.Insert(ctx, &model.User{
+	user, err := s.UserStorage.Save(ctx, &model.User{
 		Email:       req.Email,
 		Username:    req.Username,
 		DisplayName: req.DisplayName,

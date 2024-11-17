@@ -7,7 +7,7 @@ import (
 )
 
 func (s *PostService) AddPost(ctx context.Context, req *auraapi.AddPostReq) (*auraapi.AddPostRes, error) {
-	post, err := s.PostStorage.Insert(ctx, &model.Post{
+	post, err := s.PostStorage.Save(ctx, &model.Post{
 		Content: req.Content,
 		UserID:  req.UserID,
 	})

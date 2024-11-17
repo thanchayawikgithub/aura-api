@@ -1,7 +1,7 @@
 package httpadapter
 
 import (
-	"net/http"
+	"aura/internal/pkg/response"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -10,13 +10,13 @@ import (
 func (a *Adapter) GetPostByID(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("post_id"))
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
+		return response.BadRequest(c, err.Error())
 	}
 
-	res, err := a.postService.GetPostByID(c.Request().Context(), uint(id))
+	result, err := a.postService.GetPostByID(c.Request().Context(), uint(id))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
+		return response.InternalServerError(c, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return response.OK(c, result)
 }

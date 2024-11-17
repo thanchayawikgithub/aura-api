@@ -2,7 +2,7 @@ package httpadapter
 
 import (
 	"aura/auraapi"
-	"net/http"
+	"aura/internal/pkg/response"
 
 	"github.com/labstack/echo/v4"
 )
@@ -10,13 +10,13 @@ import (
 func (a *Adapter) AddUser(c echo.Context) error {
 	req, err := BindAndValidate[auraapi.AddUserReq](c)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
+		return response.BadRequest(c, err.Error())
 	}
 
-	res, err := a.userService.AddUser(c.Request().Context(), req)
+	result, err := a.userService.AddUser(c.Request().Context(), req)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
+		return response.InternalServerError(c, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return response.Created(c, result)
 }
