@@ -16,7 +16,7 @@ import (
 
 type (
 	ModelType interface {
-		*model.Post | *model.User
+		*model.Post | *model.User | *model.RefreshToken
 	}
 
 	IStorage[T ModelType] interface {

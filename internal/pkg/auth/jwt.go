@@ -20,28 +20,13 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-// func GenerateToken(userID uint, email string, config *config.JWT) (string, error) {
-// 	claims := &Claims{
-// 		UserID: userID,
-// 		Email:  email,
-// 		RegisteredClaims: jwt.RegisteredClaims{
-// 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(config.ExpiresIn) * time.Second)),
-// 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-// 		},
-// 	}
-
-// 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-// 	return token.SignedString([]byte(config.SecretKey))
-// }
-
 func GenerateAccessToken(userID uint, email string, config *config.JWT) (string, error) {
 	claims := &Claims{
 		UserID:    userID,
 		Email:     email,
 		TokenType: "access",
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(config.AccessTokenExpiresIn) * time.Second)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(config.AccessTokenExpiresAt) * time.Second)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}
@@ -50,13 +35,20 @@ func GenerateAccessToken(userID uint, email string, config *config.JWT) (string,
 	return token.SignedString([]byte(config.SecretKey))
 }
 
-func GenerateRefreshToken(userID uint, email string, config *config.JWT) (string, error) {
+func GenerateRefreshToken(userID uint, email string, config *config.JWT, oldClaims *Claims) (string, error) {
+	var expiresAt *jwt.NumericDate
+	if oldClaims != nil {
+		expiresAt = oldClaims.ExpiresAt
+	} else {
+		expiresAt = jwt.NewNumericDate(time.Now().Add(time.Duration(config.RefreshTokenExpiresAt) * time.Second))
+	}
+
 	claims := &Claims{
 		UserID:    userID,
 		Email:     email,
 		TokenType: "refresh",
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(config.RefreshTokenExpiresIn) * time.Second)),
+			ExpiresAt: expiresAt,
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}

@@ -4,8 +4,7 @@ import (
 	"aura/auraapi"
 	"aura/internal/pkg/auth"
 	"aura/internal/pkg/response"
-	"net/http"
-	"time"
+	"aura/internal/util"
 
 	"github.com/labstack/echo/v4"
 )
@@ -29,33 +28,19 @@ func (a *Adapter) Login(c echo.Context) error {
 		return response.InternalServerError(c, err.Error())
 	}
 
-	refreshToken, err := auth.GenerateRefreshToken(result.UserID, result.Email, &a.config.JWT)
+	refreshToken, err := auth.GenerateRefreshToken(result.UserID, result.Email, &a.config.JWT, nil)
 	if err != nil {
 		return response.InternalServerError(c, err.Error())
 	}
 
 	// Save refresh token
-	err = a.userService.SaveRefreshToken(ctx, refreshToken, result.UserID)
+	err = a.refreshTokenService.Save(ctx, refreshToken, result.UserID)
 	if err != nil {
 		return response.InternalServerError(c, err.Error())
 	}
 
-	setSecureCookie(c, auth.AccessTokenCookieName, accessToken,
-		time.Duration(a.config.JWT.AccessTokenExpiresIn)*time.Second)
-	setSecureCookie(c, auth.RefreshTokenCookieName, refreshToken,
-		time.Duration(a.config.JWT.RefreshTokenExpiresIn)*time.Second)
+	util.SetSecureCookie(c, auth.AccessTokenCookieName, accessToken)
+	util.SetSecureCookie(c, auth.RefreshTokenCookieName, refreshToken)
 
 	return response.OK(c, result)
-}
-
-func setSecureCookie(c echo.Context, name, value string, maxAge time.Duration) {
-	c.SetCookie(&http.Cookie{
-		Name:     name,
-		Value:    value,
-		Path:     "/",
-		HttpOnly: true,
-		Secure:   false,
-		SameSite: http.SameSiteStrictMode,
-		MaxAge:   int(maxAge.Seconds()),
-	})
 }

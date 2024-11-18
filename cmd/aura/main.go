@@ -35,19 +35,21 @@ func main() {
 		return c.JSON(http.StatusOK, "OK")
 	})
 
-	mdwAuth := mdw.Auth(&cfg.JWT)
-	mdwTx := mdw.WithTx(storage)
+	mdwAuth := mdw.Auth(&cfg.JWT, handler.NewRefreshTokenService(service))
+	mdws := []echo.MiddlewareFunc{
+		mdw.WithTx(storage),
+	}
 
 	// Version 1
 	v1 := e.Group("/v1")
 
-	auth := v1.Group("/auth")
-	setUpAuth(auth, adapter, mdwTx)
+	auth := v1.Group("/auth", mdws...)
+	setUpAuth(auth, adapter)
 
-	user := v1.Group("/user")
+	user := v1.Group("/user", mdws...)
 	setUpUser(user, adapter, mdwAuth)
 
-	post := v1.Group("/post")
+	post := v1.Group("/post", mdws...)
 	setUpPost(post, adapter, mdwAuth)
 
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", cfg.Server.Port)))
@@ -80,8 +82,8 @@ func setupMiddleware(e *echo.Echo) {
 	)
 }
 
-func setUpAuth(e *echo.Group, adapter *httpadapter.Adapter, mdwTx echo.MiddlewareFunc) {
-	e.POST("/login", adapter.Login, mdwTx)
+func setUpAuth(e *echo.Group, adapter *httpadapter.Adapter) {
+	e.POST("/login", adapter.Login)
 	e.POST("/logout", adapter.Logout)
 }
 

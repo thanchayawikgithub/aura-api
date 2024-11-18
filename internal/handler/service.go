@@ -7,9 +7,10 @@ import (
 
 type (
 	Service struct {
-		cfg         *config.Config
-		UserStorage storage.IUserStorage
-		PostStorage storage.IPostStorage
+		cfg                 *config.Config
+		UserStorage         storage.IUserStorage
+		PostStorage         storage.IPostStorage
+		RefreshTokenStorage storage.IRefreshTokenStorage
 	}
 
 	UserService struct {
@@ -19,13 +20,18 @@ type (
 	PostService struct {
 		*Service
 	}
+
+	RefreshTokenService struct {
+		*Service
+	}
 )
 
 func New(s *storage.Storage, cfg *config.Config) *Service {
 	return &Service{
-		cfg:         cfg,
-		UserStorage: storage.NewUserStorage(s),
-		PostStorage: storage.NewPostStorage(s),
+		cfg:                 cfg,
+		UserStorage:         storage.NewUserStorage(s),
+		PostStorage:         storage.NewPostStorage(s),
+		RefreshTokenStorage: storage.NewRefreshTokenStorage(s),
 	}
 }
 
@@ -37,6 +43,12 @@ func NewUserService(service *Service) *UserService {
 
 func NewPostService(service *Service) *PostService {
 	return &PostService{
+		Service: service,
+	}
+}
+
+func NewRefreshTokenService(service *Service) *RefreshTokenService {
+	return &RefreshTokenService{
 		Service: service,
 	}
 }

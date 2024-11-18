@@ -9,18 +9,20 @@ import (
 )
 
 type Adapter struct {
-	config      *config.Config
-	service     *handler.Service
-	userService itf.IUserService
-	postService itf.IPostService
+	config              *config.Config
+	service             *handler.Service
+	userService         itf.IUserService
+	postService         itf.IPostService
+	refreshTokenService itf.IRefreshTokenService
 }
 
 func New(s *handler.Service, cfg *config.Config) *Adapter {
 	return &Adapter{
-		config:      cfg,
-		service:     s,
-		userService: handler.NewUserService(s),
-		postService: handler.NewPostService(s),
+		config:              cfg,
+		service:             s,
+		userService:         handler.NewUserService(s),
+		refreshTokenService: handler.NewRefreshTokenService(s),
+		postService:         handler.NewPostService(s),
 	}
 }
 

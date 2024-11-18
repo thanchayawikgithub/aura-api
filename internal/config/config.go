@@ -39,8 +39,8 @@ type (
 	// }
 	JWT struct {
 		SecretKey             string        `mapstructure:"secretKey" validate:"required"`
-		AccessTokenExpiresIn  time.Duration `mapstructure:"accessTokenExpiresIn" validate:"required"`
-		RefreshTokenExpiresIn time.Duration `mapstructure:"refreshTokenExpiresIn" validate:"required"`
+		AccessTokenExpiresAt  time.Duration `mapstructure:"accessTokenExpiresAt" validate:"required"`
+		RefreshTokenExpiresAt time.Duration `mapstructure:"refreshTokenExpiresAt" validate:"required"`
 	}
 )
 
