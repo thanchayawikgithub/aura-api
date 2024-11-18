@@ -17,6 +17,7 @@ type User struct {
 	DisplayName string `gorm:"column:display_name" validate:"required"`
 	Password    string `gorm:"column:password" validate:"required"`
 	Posts       []Post
+	Comments    []Comment
 }
 
 func (User) TableName() string {

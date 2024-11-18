@@ -52,7 +52,32 @@ func main() {
 	post := v1.Group("/post", mdws...)
 	setUpPost(post, adapter, mdwAuth)
 
+	comment := v1.Group("/comment", mdws...)
+	setUpComment(comment, adapter)
+
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", cfg.Server.Port)))
+}
+
+func setUpAuth(e *echo.Group, adapter *httpadapter.Adapter) {
+	e.POST("/login", adapter.Login)
+	e.POST("/logout", adapter.Logout)
+}
+
+func setUpUser(e *echo.Group, adapter *httpadapter.Adapter, mdwAuth echo.MiddlewareFunc) {
+	e.POST("", adapter.AddUser)
+	e.GET(pathParamUserID, adapter.GetUserByID, mdwAuth)
+}
+
+func setUpPost(e *echo.Group, adapter *httpadapter.Adapter, mdwAuth echo.MiddlewareFunc) {
+	e.POST("", adapter.AddPost)
+	e.GET(pathParamPostID, adapter.GetPostByID, mdwAuth)
+	e.GET("/user"+pathParamUserID, adapter.GetPostsByUserID, mdwAuth)
+	e.PATCH(pathParamPostID, adapter.EditPost, mdwAuth)
+	e.DELETE(pathParamPostID, adapter.DeletePost, mdwAuth)
+}
+
+func setUpComment(e *echo.Group, adapter *httpadapter.Adapter) {
+	e.POST("", adapter.AddComment)
 }
 
 func setupMiddleware(e *echo.Echo) {
@@ -80,22 +105,4 @@ func setupMiddleware(e *echo.Echo) {
 			},
 		}),
 	)
-}
-
-func setUpAuth(e *echo.Group, adapter *httpadapter.Adapter) {
-	e.POST("/login", adapter.Login)
-	e.POST("/logout", adapter.Logout)
-}
-
-func setUpUser(e *echo.Group, adapter *httpadapter.Adapter, mdwAuth echo.MiddlewareFunc) {
-	e.POST("", adapter.AddUser)
-	e.GET(pathParamUserID, adapter.GetUserByID, mdwAuth)
-}
-
-func setUpPost(e *echo.Group, adapter *httpadapter.Adapter, mdwAuth echo.MiddlewareFunc) {
-	e.POST("", adapter.AddPost)
-	e.GET(pathParamPostID, adapter.GetPostByID, mdwAuth)
-	e.GET("/user"+pathParamUserID, adapter.GetPostsByUserID, mdwAuth)
-	e.PATCH(pathParamPostID, adapter.EditPost, mdwAuth)
-	e.DELETE(pathParamPostID, adapter.DeletePost, mdwAuth)
 }

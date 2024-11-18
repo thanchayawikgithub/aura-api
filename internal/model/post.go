@@ -12,9 +12,10 @@ const (
 
 type Post struct {
 	gorm.Model
-	Content string `gorm:"column:content"`
-	UserID  uint
-	User    User
+	Content  string `gorm:"column:content"`
+	UserID   uint
+	User     User
+	Comments []Comment
 }
 
 func (p *Post) ToDomain() *auradomain.Post {

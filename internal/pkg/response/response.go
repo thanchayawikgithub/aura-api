@@ -11,14 +11,14 @@ type Response struct {
 	Data    interface{} `json:"data,omitempty"`
 }
 
-func Error(c echo.Context, code int, message string) error {
+func errorRes(c echo.Context, code int, message string) error {
 	return c.JSON(code, &Response{
 		Message: message,
 		Data:    nil,
 	})
 }
 
-func Success(c echo.Context, code int, message string, data interface{}) error {
+func successRes(c echo.Context, code int, message string, data interface{}) error {
 	return c.JSON(code, &Response{
 		Message: message,
 		Data:    data,
@@ -26,34 +26,34 @@ func Success(c echo.Context, code int, message string, data interface{}) error {
 }
 
 func OK(c echo.Context, data interface{}) error {
-	return Success(c, http.StatusOK, "Success", data)
+	return successRes(c, http.StatusOK, "Success", data)
 }
 
 func Created(c echo.Context, data interface{}) error {
-	return Success(c, http.StatusCreated, "Created", data)
+	return successRes(c, http.StatusCreated, "Created", data)
 }
 
 func BadRequest(c echo.Context, message string) error {
-	return Error(c, http.StatusBadRequest, message)
+	return errorRes(c, http.StatusBadRequest, message)
 }
 
 func Unauthorized(c echo.Context, message string) error {
-	return Error(c, http.StatusUnauthorized, message)
+	return errorRes(c, http.StatusUnauthorized, message)
 }
 
 func Forbidden(c echo.Context, message string) error {
-	return Error(c, http.StatusForbidden, message)
+	return errorRes(c, http.StatusForbidden, message)
 }
 
 func NotFound(c echo.Context, message string) error {
-	return Error(c, http.StatusNotFound, message)
+	return errorRes(c, http.StatusNotFound, message)
 }
 
 func InternalServerError(c echo.Context, message string) error {
 	if message == "" {
 		message = "Internal Server Error"
 	}
-	return Error(c, http.StatusInternalServerError, message)
+	return errorRes(c, http.StatusInternalServerError, message)
 }
 
 func NoContent(c echo.Context) error {

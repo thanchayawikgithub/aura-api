@@ -14,6 +14,7 @@ type Adapter struct {
 	userService         itf.IUserService
 	postService         itf.IPostService
 	refreshTokenService itf.IRefreshTokenService
+	commentService      itf.ICommentService
 }
 
 func New(s *handler.Service, cfg *config.Config) *Adapter {
@@ -23,6 +24,7 @@ func New(s *handler.Service, cfg *config.Config) *Adapter {
 		userService:         handler.NewUserService(s),
 		refreshTokenService: handler.NewRefreshTokenService(s),
 		postService:         handler.NewPostService(s),
+		commentService:      handler.NewCommentService(s),
 	}
 }
 

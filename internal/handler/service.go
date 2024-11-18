@@ -11,6 +11,7 @@ type (
 		UserStorage         storage.IUserStorage
 		PostStorage         storage.IPostStorage
 		RefreshTokenStorage storage.IRefreshTokenStorage
+		CommentStorage      storage.ICommentStorage
 	}
 
 	UserService struct {
@@ -24,6 +25,10 @@ type (
 	RefreshTokenService struct {
 		*Service
 	}
+
+	CommentService struct {
+		*Service
+	}
 )
 
 func New(s *storage.Storage, cfg *config.Config) *Service {
@@ -32,6 +37,7 @@ func New(s *storage.Storage, cfg *config.Config) *Service {
 		UserStorage:         storage.NewUserStorage(s),
 		PostStorage:         storage.NewPostStorage(s),
 		RefreshTokenStorage: storage.NewRefreshTokenStorage(s),
+		CommentStorage:      storage.NewCommentStorage(s),
 	}
 }
 
@@ -49,6 +55,12 @@ func NewPostService(service *Service) *PostService {
 
 func NewRefreshTokenService(service *Service) *RefreshTokenService {
 	return &RefreshTokenService{
+		Service: service,
+	}
+}
+
+func NewCommentService(service *Service) *CommentService {
+	return &CommentService{
 		Service: service,
 	}
 }

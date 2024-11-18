@@ -16,7 +16,7 @@ import (
 
 type (
 	ModelType interface {
-		*model.Post | *model.User | *model.RefreshToken
+		*model.Post | *model.User | *model.RefreshToken | *model.Comment
 	}
 
 	IStorage[T ModelType] interface {
@@ -69,7 +69,7 @@ func New(cfg *config.Database) *Storage {
 	db.SetMaxOpenConns(cfg.MaxOpenConns)
 	db.SetConnMaxLifetime(cfg.MaxLifeTime * time.Second)
 
-	conn.AutoMigrate(&model.User{}, &model.Post{}, &model.RefreshToken{})
+	conn.AutoMigrate(&model.User{}, &model.Post{}, &model.RefreshToken{}, &model.Comment{})
 	return &Storage{db: conn}
 }
 
