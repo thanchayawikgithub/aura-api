@@ -81,7 +81,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\":\"than@mail.com\",\n    \"username\": \"thxn\",\n    \"password\":\"than11014\",\n    \"display_name\": \"thanny\"\n}",
+							"raw": "{\n    \"email\":\"test@mail.com\",\n    \"username\": \"test\",\n    \"password\":\"1234\",\n    \"display_name\": \"test\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -99,7 +99,61 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "201 - Created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\":\"test@mail.com\",\n    \"username\": \"test\",\n    \"password\":\"1234\",\n    \"display_name\": \"test\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/user",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"user"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "ZPKiwJywzDRhcwXGOqRFTwSbYCzAvvaa"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 17 Nov 2024 14:47:05 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "102"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Created\",\n    \"data\": {\n        \"id\": 4,\n        \"email\": \"test@mail.com\",\n        \"username\": \"test\",\n        \"display_name\": \"test\"\n    }\n}"
+						}
+					]
 				}
 			]
 		},
@@ -113,7 +167,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"content\":\"sdsdsdsdsdsdds\",\n    \"user_id\":1\n}",
+							"raw": "{\n    \"content\":\"testttttt\",\n    \"user_id\":4\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -193,14 +247,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/v1/post/4",
+							"raw": "{{host}}/v1/post/3",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"v1",
 								"post",
-								"4"
+								"3"
 							]
 						}
 					},
@@ -326,7 +380,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"content\":\"sdsss\"\n}",
+							"raw": "{\n    \"content\":\"sdsssss\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -334,14 +388,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/v1/post/4",
+							"raw": "{{host}}/v1/post/23",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"v1",
 								"post",
-								"4"
+								"23"
 							]
 						}
 					},
@@ -399,6 +453,60 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"message\": \"Success\",\n    \"data\": {\n        \"id\": 4,\n        \"content\": \"sdsss\",\n        \"created_at\": \"2024-11-17T11:45:11.083337+07:00\",\n        \"user_id\": 1\n    }\n}"
+						},
+						{
+							"name": "403 - Forbidden",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\":\"sdsssss\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/post/23",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"post",
+										"23"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "GorbvqtPMPwQEJCUyEoIwYGnLbJnwJRa"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 17 Nov 2024 15:40:41 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "28"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"no permission\"\n}"
 						}
 					]
 				},
@@ -408,18 +516,101 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/v1/post/1",
+							"raw": "{{host}}/v1/post/23",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"v1",
 								"post",
-								"1"
+								"23"
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "204 - No Content",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/post/18",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"post",
+										"18"
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "nmpeuxMMbKABQBASJwtkrLjFrRVdumEg"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 17 Nov 2024 15:41:11 GMT"
+								}
+							],
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "403 - Forbidden",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/post/23",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"post",
+										"23"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "kyvpBiuhBCXzNdoGbJQCEoQpSkWIWLQc"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 17 Nov 2024 15:41:33 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "28"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"no permission\"\n}"
+						}
+					]
 				}
 			]
 		},
@@ -530,6 +721,226 @@
 							]
 						}
 					},
+					"response": [
+						{
+							"name": "200 - OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/auth/logout",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"auth",
+										"logout"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "access_token=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "DebHHSBeLOMUzqfrdDQQLhRzucKtsvAZ"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 17 Nov 2024 13:35:59 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "22"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Success\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "comment",
+			"item": [
+				{
+					"name": "add comment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\":\"testttttt2222\",\n    \"user_id\":1,\n    \"post_id\":3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/comment",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"comment"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "201 - Created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\":\"testttttt\",\n    \"user_id\":1,\n    \"post_id\":3\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/comment",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"comment"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "kEocnjxpCIaCMkOIOVstKZHwqDIlhwke"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 18 Nov 2024 08:49:36 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "132"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Created\",\n    \"data\": {\n        \"id\": 3,\n        \"user_id\": 1,\n        \"post_id\": 3,\n        \"content\": \"testttttt\",\n        \"created_at\": \"2024-11-18T15:49:36.512776+07:00\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "get by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/comment/7",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"comment",
+								"7"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "200 - OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/comment/1",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"comment",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "X-Request-Id",
+									"value": "LqlFAHfoeMWtKHpMjwnkUbDAUmqnNxXq"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 18 Nov 2024 09:13:15 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "132"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Success\",\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 1,\n        \"post_id\": 2,\n        \"content\": \"testttttt\",\n        \"created_at\": \"2024-11-18T15:48:55.377539+07:00\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "delete comment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/comment/7",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"comment",
+								"7"
+							]
+						}
+					},
 					"response": []
 				}
 			]
@@ -538,9 +949,62 @@
 			"name": "health",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "{{host}}/health",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"health"
+					]
+				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "200 - OK",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/health",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Request-Id",
+							"value": "TFAwZhUGLPuArBIQuwiHSPectIvruxiw"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 17 Nov 2024 13:52:39 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "5"
+						}
+					],
+					"cookie": [],
+					"body": "\"OK\""
+				}
+			]
 		}
 	]
 }
