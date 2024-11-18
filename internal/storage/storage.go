@@ -26,6 +26,7 @@ type (
 		Update(ctx context.Context, id uint, data T) (T, error)
 		Delete(ctx context.Context, data T) error
 		WithPreload(preloads ...string) IStorage[T]
+		WithTx(tx *gorm.DB) IStorage[T]
 	}
 
 	AbstractStorage[T ModelType] struct {
@@ -68,13 +69,28 @@ func New(cfg *config.Database) *Storage {
 	db.SetMaxOpenConns(cfg.MaxOpenConns)
 	db.SetConnMaxLifetime(cfg.MaxLifeTime * time.Second)
 
-	conn.AutoMigrate(&model.User{}, &model.Post{})
+	conn.AutoMigrate(&model.User{}, &model.Post{}, &model.RefreshToken{})
 	return &Storage{db: conn}
 }
 
+func (s *Storage) GetDB() *gorm.DB {
+	return s.db
+}
+
+func (s *AbstractStorage[T]) WithTx(tx *gorm.DB) IStorage[T] {
+	return &AbstractStorage[T]{
+		db:        tx,
+		tableName: s.tableName,
+		preloads:  s.preloads,
+	}
+}
+
 func (s *AbstractStorage[T]) WithPreload(preloads ...string) IStorage[T] {
-	s.preloads = preloads
-	return s
+	return &AbstractStorage[T]{
+		db:        s.db,
+		tableName: s.tableName,
+		preloads:  preloads,
+	}
 }
 
 // Modify FindByID to use preloads
@@ -98,16 +114,6 @@ func (s *AbstractStorage[T]) FindAll(ctx context.Context) (data []T, err error) 
 	s.preloads = nil // Reset preloads after query
 	return data, err
 }
-
-// func (s *AbstractStorage[T]) FindByID(ctx context.Context, id uint) (data T, err error) {
-// 	err = s.db.Table(s.tableName).WithContext(ctx).Where("id = ?", id).First(&data).Error
-// 	return data, err
-// }
-
-// func (s *AbstractStorage[T]) FindAll(ctx context.Context) (data []T, err error) {
-// 	err = s.db.Table(s.tableName).WithContext(ctx).Find(&data).Error
-// 	return data, err
-// }
 
 func (s *AbstractStorage[T]) Save(ctx context.Context, data T) (T, error) {
 	err := s.db.Table(s.tableName).WithContext(ctx).Save(&data).Error

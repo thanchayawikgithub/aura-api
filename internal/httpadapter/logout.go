@@ -19,5 +19,15 @@ func (a *Adapter) Logout(c echo.Context) error {
 		MaxAge:   -1,
 	})
 
+	c.SetCookie(&http.Cookie{
+		Name:     auth.RefreshTokenCookieName,
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   false,
+		SameSite: http.SameSiteStrictMode,
+		MaxAge:   -1,
+	})
+
 	return response.OK(c, nil)
 }

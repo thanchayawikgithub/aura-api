@@ -11,6 +11,7 @@ type (
 	IUserStorage interface {
 		IStorage[*model.User]
 		FindByEmail(ctx context.Context, email string) (result *model.User, err error)
+		SaveRefreshToken(ctx context.Context, refreshToken *model.RefreshToken) error
 	}
 
 	UserStorage struct {
@@ -38,4 +39,8 @@ func NewMockUserStorage() *MockUserStorage {
 func (s *UserStorage) FindByEmail(ctx context.Context, email string) (result *model.User, err error) {
 	err = s.db.WithContext(ctx).Where("email = ?", email).First(&result).Error
 	return result, err
+}
+
+func (s *UserStorage) SaveRefreshToken(ctx context.Context, refreshToken *model.RefreshToken) error {
+	return s.db.WithContext(ctx).Model(&model.RefreshToken{}).Save(&refreshToken).Error
 }

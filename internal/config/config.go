@@ -33,9 +33,14 @@ type (
 		MaxLifeTime  time.Duration `mapstructure:"maxLifeTime" validate:"required"`
 	}
 
+	// JWT struct {
+	// 	SecretKey string        `mapstructure:"secretKey" validate:"required"`
+	// 	ExpiresIn time.Duration `mapstructure:"expiresIn" validate:"required"`
+	// }
 	JWT struct {
-		SecretKey string        `mapstructure:"secretKey" validate:"required"`
-		ExpiresIn time.Duration `mapstructure:"expiresIn" validate:"required"`
+		SecretKey             string        `mapstructure:"secretKey" validate:"required"`
+		AccessTokenExpiresIn  time.Duration `mapstructure:"accessTokenExpiresIn" validate:"required"`
+		RefreshTokenExpiresIn time.Duration `mapstructure:"refreshTokenExpiresIn" validate:"required"`
 	}
 )
 

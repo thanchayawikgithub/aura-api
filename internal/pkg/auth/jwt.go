@@ -9,21 +9,54 @@ import (
 )
 
 const (
-	AccessTokenCookieName = "access_token"
+	AccessTokenCookieName  = "access_token"
+	RefreshTokenCookieName = "refresh_token"
 )
 
 type Claims struct {
-	UserID uint   `json:"user_id"`
-	Email  string `json:"email"`
+	UserID    uint   `json:"user_id"`
+	Email     string `json:"email"`
+	TokenType string `json:"token_type"`
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(userID uint, email string, config *config.JWT) (string, error) {
+// func GenerateToken(userID uint, email string, config *config.JWT) (string, error) {
+// 	claims := &Claims{
+// 		UserID: userID,
+// 		Email:  email,
+// 		RegisteredClaims: jwt.RegisteredClaims{
+// 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(config.ExpiresIn) * time.Second)),
+// 			IssuedAt:  jwt.NewNumericDate(time.Now()),
+// 		},
+// 	}
+
+// 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+// 	return token.SignedString([]byte(config.SecretKey))
+// }
+
+func GenerateAccessToken(userID uint, email string, config *config.JWT) (string, error) {
 	claims := &Claims{
-		UserID: userID,
-		Email:  email,
+		UserID:    userID,
+		Email:     email,
+		TokenType: "access",
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(config.ExpiresIn) * time.Second)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(config.AccessTokenExpiresIn) * time.Second)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(config.SecretKey))
+}
+
+func GenerateRefreshToken(userID uint, email string, config *config.JWT) (string, error) {
+	claims := &Claims{
+		UserID:    userID,
+		Email:     email,
+		TokenType: "refresh",
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(config.RefreshTokenExpiresIn) * time.Second)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}

@@ -36,12 +36,13 @@ func main() {
 	})
 
 	mdwAuth := mdw.Auth(&cfg.JWT)
+	mdwTx := mdw.WithTx(storage)
 
 	// Version 1
 	v1 := e.Group("/v1")
 
 	auth := v1.Group("/auth")
-	setUpAuth(auth, adapter)
+	setUpAuth(auth, adapter, mdwTx)
 
 	user := v1.Group("/user")
 	setUpUser(user, adapter, mdwAuth)
@@ -79,8 +80,8 @@ func setupMiddleware(e *echo.Echo) {
 	)
 }
 
-func setUpAuth(e *echo.Group, adapter *httpadapter.Adapter) {
-	e.POST("/login", adapter.Login)
+func setUpAuth(e *echo.Group, adapter *httpadapter.Adapter, mdwTx echo.MiddlewareFunc) {
+	e.POST("/login", adapter.Login, mdwTx)
 	e.POST("/logout", adapter.Logout)
 }
 

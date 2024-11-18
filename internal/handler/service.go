@@ -7,6 +7,7 @@ import (
 
 type (
 	Service struct {
+		cfg         *config.Config
 		UserStorage storage.IUserStorage
 		PostStorage storage.IPostStorage
 	}
@@ -22,6 +23,7 @@ type (
 
 func New(s *storage.Storage, cfg *config.Config) *Service {
 	return &Service{
+		cfg:         cfg,
 		UserStorage: storage.NewUserStorage(s),
 		PostStorage: storage.NewPostStorage(s),
 	}

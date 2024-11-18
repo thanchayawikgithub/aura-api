@@ -3,14 +3,25 @@ package util
 import (
 	"context"
 	"errors"
+
+	"gorm.io/gorm"
 )
 
 type CtxKey int
 
 const (
-	UserID CtxKey = iota + 1
+	Tx CtxKey = iota + 1
+	UserID
 	UserEmail
 )
+
+func GetTx(ctx context.Context) (*gorm.DB, error) {
+	tx, ok := ctx.Value(Tx).(*gorm.DB)
+	if !ok {
+		return nil, errors.New("transaction not found in context")
+	}
+	return tx, nil
+}
 
 func GetUserID(ctx context.Context) (uint, error) {
 	id, ok := ctx.Value(UserID).(uint)
