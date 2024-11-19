@@ -7,7 +7,6 @@ import (
 	"aura/internal/util"
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/stretchr/testify/mock"
 	"gorm.io/gorm"
@@ -140,9 +139,6 @@ func (suite *ServiceTestSuite) TestEditPost() {
 			}
 
 			got, err := suite.PostService.EditPost(tc.args.ctx, tc.args.req, tc.args.id)
-			fmt.Printf("tc.name: %v\n", tc.name)
-			fmt.Printf("got: %v\n", got)
-			fmt.Printf("err: %v\n", err)
 			if tc.wantErr {
 				suite.Error(err)
 				suite.Equal(tc.err, err)
