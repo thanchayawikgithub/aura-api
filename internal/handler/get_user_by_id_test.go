@@ -27,9 +27,7 @@ func (suite *ServiceTestSuite) TestGetUserByID() {
 			name: "success",
 			mock: func() {
 				suite.userStorage.On("FindByID", mock.Anything, mock.Anything).Return(&model.User{
-					Model: gorm.Model{
-						ID: 1,
-					},
+					ID:          1,
 					Email:       "test@test.com",
 					Username:    "test",
 					Password:    "password",

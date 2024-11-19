@@ -2,6 +2,7 @@ package model
 
 import (
 	"aura/auradomain"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -11,12 +12,15 @@ const (
 )
 
 type Comment struct {
-	gorm.Model
-	Content string `gorm:"column:content"`
-	UserID  uint
-	User    User
-	PostID  uint
-	Post    Post
+	ID        uint `gorm:"primarykey"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+	Content   string         `gorm:"column:content"`
+	UserID    uint
+	User      User
+	PostID    uint
+	Post      Post
 }
 
 func (c *Comment) ToDomain() *auradomain.Comment {

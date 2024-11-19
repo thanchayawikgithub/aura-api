@@ -19,9 +19,11 @@ type ServiceTestSuite struct {
 
 	storage     *storage.Storage
 	userStorage *database.MockUserStorage
+	postStorage *database.MockPostStorage
 
 	service     *Service
 	UserService *UserService
+	PostService *PostService
 }
 
 func TestServiceTestSuite(t *testing.T) {
@@ -35,11 +37,14 @@ func (suite *ServiceTestSuite) SetupSuite() {
 
 	suite.storage = &storage.Storage{}
 	suite.userStorage = new(database.MockUserStorage)
+	suite.postStorage = new(database.MockPostStorage)
 	suite.service = &Service{
 		UserStorage: suite.userStorage,
+		PostStorage: suite.postStorage,
 	}
 
 	suite.UserService = NewUserService(suite.service)
+	suite.PostService = NewPostService(suite.service)
 }
 
 func (suite *ServiceTestSuite) MockContext() context.Context {

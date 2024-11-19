@@ -4,8 +4,6 @@ import (
 	"aura/internal/model"
 	"aura/internal/util"
 	"context"
-
-	"gorm.io/gorm"
 )
 
 func (s *CommentService) DeleteComment(ctx context.Context, id uint) error {
@@ -23,5 +21,5 @@ func (s *CommentService) DeleteComment(ctx context.Context, id uint) error {
 		return ErrNoPermission
 	}
 
-	return s.CommentStorage.Delete(ctx, &model.Comment{Model: gorm.Model{ID: id}})
+	return s.CommentStorage.Delete(ctx, &model.Comment{ID: id})
 }

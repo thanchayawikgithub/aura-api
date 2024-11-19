@@ -2,6 +2,7 @@ package model
 
 import (
 	"aura/auradomain"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -11,11 +12,14 @@ const (
 )
 
 type User struct {
-	gorm.Model
-	Email       string `gorm:"column:email;unique" validate:"required,email"`
-	Username    string `gorm:"column:username;unique" validate:"required"`
-	DisplayName string `gorm:"column:display_name" validate:"required"`
-	Password    string `gorm:"column:password" validate:"required"`
+	ID          uint `gorm:"primarykey"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	DeletedAt   gorm.DeletedAt `gorm:"index"`
+	Email       string         `gorm:"column:email;unique"`
+	Username    string         `gorm:"column:username;unique"`
+	DisplayName string         `gorm:"column:display_name"`
+	Password    string         `gorm:"column:password"`
 	Posts       []Post
 	Comments    []Comment
 }
