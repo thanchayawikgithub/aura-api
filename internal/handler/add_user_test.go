@@ -73,24 +73,6 @@ func (suite *ServiceTestSuite) TestAddUser() {
 			wantErr: true,
 			err:     gorm.ErrInvalidDB,
 		},
-		{
-			name: "empty password",
-			mock: func() {
-				suite.userStorage.On("Save", mock.Anything, mock.Anything).Return(&model.User{}, bcrypt.ErrHashTooShort).Once()
-			},
-			args: args{
-				ctx: suite.ctx,
-				req: &auraapi.AddUserReq{
-					Email:       "test@test.com",
-					Username:    "test",
-					DisplayName: "test",
-					Password:    "",
-				},
-			},
-			want:    nil,
-			wantErr: true,
-			err:     bcrypt.ErrHashTooShort,
-		},
 	}
 
 	for _, tc := range testCases {
@@ -109,4 +91,17 @@ func (suite *ServiceTestSuite) TestAddUser() {
 			}
 		})
 	}
+
+	suite.Run("password too long", func() {
+		got, err := suite.UserService.AddUser(suite.ctx, &auraapi.AddUserReq{
+			Email:       "test@test.com",
+			Username:    "test",
+			DisplayName: "test",
+			Password:    string(make([]byte, 73)),
+		})
+
+		suite.Nil(got)
+		suite.Error(err)
+		suite.Equal(bcrypt.ErrPasswordTooLong, err)
+	})
 }
