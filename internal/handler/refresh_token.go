@@ -39,7 +39,6 @@ func (s *RefreshTokenService) Rotate(ctx context.Context, oldRefreshToken *model
 	if err != nil {
 		return err
 	}
-	tx.Commit()
 
 	_, err = s.RefreshTokenStorage.WithTx(tx).Save(ctx, &model.RefreshToken{
 		Token:  newRefreshToken,
@@ -48,7 +47,6 @@ func (s *RefreshTokenService) Rotate(ctx context.Context, oldRefreshToken *model
 	if err != nil {
 		return err
 	}
-	tx.Commit()
 
 	return nil
 }
