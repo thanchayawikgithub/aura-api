@@ -34,10 +34,6 @@ type (
 		MaxLifeTime  time.Duration `mapstructure:"maxLifeTime" validate:"required"`
 	}
 
-	// JWT struct {
-	// 	SecretKey string        `mapstructure:"secretKey" validate:"required"`
-	// 	ExpiresIn time.Duration `mapstructure:"expiresIn" validate:"required"`
-	// }
 	JWT struct {
 		SecretKey             string        `mapstructure:"secretKey" validate:"required"`
 		AccessTokenExpiresAt  time.Duration `mapstructure:"accessTokenExpiresAt" validate:"required"`
@@ -49,6 +45,12 @@ type (
 		AccessKeyID     string `mapstructure:"accessKeyID" validate:"required"`
 		SecretAccessKey string `mapstructure:"secretAccessKey" validate:"required"`
 		UseSSL          bool   `mapstructure:"useSSL" validate:"required"`
+	}
+
+	Redis struct {
+		Host string `mapstructure:"host" validate:"required"`
+		Port int    `mapstructure:"port" validate:"required"`
+		DB   int    `mapstructure:"db" validate:"required"`
 	}
 )
 
