@@ -4,6 +4,7 @@ import (
 	"aura/auraapi"
 	"aura/auradomain"
 	"aura/internal/model"
+	test "aura/tests/app"
 	"context"
 
 	"github.com/stretchr/testify/mock"
@@ -16,56 +17,49 @@ func (suite *ServiceTestSuite) TestGetPostsByUserID() {
 		id  uint
 	}
 
-	testCases := []struct {
-		name    string
-		mock    func()
-		args    args
-		want    *auraapi.GetPostsByUserIDRes
-		wantErr bool
-		err     error
-	}{
+	testCases := []test.TestCase[args, *auraapi.GetPostsByUserIDRes]{
 		{
-			name: "success",
-			mock: func() {
+			Name: "success",
+			Mock: func() {
 				suite.postStorage.On("FindByUserID", mock.Anything, mock.Anything).Return([]*model.Post{}, nil).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				id:  1,
 			},
-			want: &auraapi.GetPostsByUserIDRes{
+			Want: &auraapi.GetPostsByUserIDRes{
 				Posts: []*auradomain.Post{},
 			},
-			wantErr: false,
-			err:     nil,
+			WantErr: false,
+			Err:     nil,
 		},
 		{
-			name: "error",
-			mock: func() {
+			Name: "error",
+			Mock: func() {
 				suite.postStorage.On("FindByUserID", mock.Anything, mock.Anything).Return([]*model.Post{}, gorm.ErrInvalidDB).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				id:  1,
 			},
-			wantErr: true,
-			err:     gorm.ErrInvalidDB,
+			WantErr: true,
+			Err:     gorm.ErrInvalidDB,
 		},
 	}
 
 	for _, tc := range testCases {
-		suite.Run(tc.name, func() {
-			if tc.mock != nil {
-				tc.mock()
+		suite.Run(tc.Name, func() {
+			if tc.Mock != nil {
+				tc.Mock()
 			}
 
-			got, err := suite.PostService.GetPostsByUserID(tc.args.ctx, tc.args.id)
-			if tc.wantErr {
+			got, err := suite.PostService.GetPostsByUserID(tc.Args.ctx, tc.Args.id)
+			if tc.WantErr {
 				suite.Error(err)
-				suite.Equal(tc.err, err)
+				suite.Equal(tc.Err, err)
 			} else {
 				suite.NoError(err)
-				suite.Equal(tc.want, got)
+				suite.Equal(tc.Want, got)
 			}
 		})
 	}

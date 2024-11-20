@@ -5,6 +5,7 @@ import (
 	"aura/auradomain"
 	"aura/internal/model"
 	"aura/internal/util"
+	test "aura/tests/app"
 	"context"
 	"errors"
 
@@ -19,24 +20,17 @@ func (suite *ServiceTestSuite) TestEditPost() {
 		id  uint
 	}
 
-	testCases := []struct {
-		name    string
-		args    args
-		mock    func()
-		want    *auraapi.EditPostRes
-		wantErr bool
-		err     error
-	}{
+	testCases := []test.TestCase[args, *auraapi.EditPostRes]{
 		{
-			name: "success",
-			args: args{
+			Name: "success",
+			Args: args{
 				ctx: suite.ctx,
 				req: &auraapi.EditPostReq{
 					Content: "change for test",
 				},
 				id: 1,
 			},
-			mock: func() {
+			Mock: func() {
 				userID, err := util.GetUserID(suite.ctx)
 				suite.NoError(err)
 
@@ -51,9 +45,9 @@ func (suite *ServiceTestSuite) TestEditPost() {
 					UserID:  userID,
 				}, nil).Once()
 			},
-			wantErr: false,
-			err:     nil,
-			want: &auraapi.EditPostRes{
+			WantErr: false,
+			Err:     nil,
+			Want: &auraapi.EditPostRes{
 				Post: &auradomain.Post{
 					ID:      1,
 					Content: "change for test",
@@ -62,60 +56,58 @@ func (suite *ServiceTestSuite) TestEditPost() {
 			},
 		},
 		{
-			name: "user id not found in context",
-			args: args{
+			Name: "user id not found in context",
+			Args: args{
 				ctx: context.TODO(),
 				id:  1,
 			},
-			wantErr: true,
-			err:     errors.New("user id not found in context"),
+			WantErr: true,
+			Err:     errors.New("user id not found in context"),
 		},
 		{
-			name: "post not found",
-			mock: func() {
+			Name: "post not found",
+			Mock: func() {
 				suite.postStorage.On("FindByID", mock.Anything, mock.Anything).Return(&model.Post{}, gorm.ErrRecordNotFound).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				req: &auraapi.EditPostReq{
 					Content: "change for test",
 				},
 				id: 20,
 			},
-			wantErr: true,
-			want:    nil,
-			err:     gorm.ErrRecordNotFound,
+			WantErr: true,
+			Err:     gorm.ErrRecordNotFound,
 		},
 		{
-			name: "no permission",
-			args: args{
+			Name: "no permission",
+			Args: args{
 				ctx: suite.ctx,
 				req: &auraapi.EditPostReq{
 					Content: "change for test",
 				},
 				id: 1,
 			},
-			mock: func() {
+			Mock: func() {
 				suite.postStorage.On("FindByID", mock.Anything, mock.Anything).Return(&model.Post{
 					ID:      1,
 					UserID:  20,
 					Content: "test",
 				}, nil).Once()
 			},
-			wantErr: true,
-			want:    nil,
-			err:     ErrNoPermission,
+			WantErr: true,
+			Err:     ErrNoPermission,
 		},
 		{
-			name: "update error",
-			args: args{
+			Name: "update error",
+			Args: args{
 				ctx: suite.ctx,
 				req: &auraapi.EditPostReq{
 					Content: "change for test",
 				},
 				id: 1,
 			},
-			mock: func() {
+			Mock: func() {
 				userID, err := util.GetUserID(suite.ctx)
 				suite.NoError(err)
 
@@ -126,25 +118,24 @@ func (suite *ServiceTestSuite) TestEditPost() {
 				}, nil).Once()
 				suite.postStorage.On("Update", mock.Anything, mock.Anything, mock.Anything).Return(&model.Post{}, gorm.ErrInvalidDB).Once()
 			},
-			wantErr: true,
-			want:    nil,
-			err:     gorm.ErrInvalidDB,
+			WantErr: true,
+			Err:     gorm.ErrInvalidDB,
 		},
 	}
 
 	for _, tc := range testCases {
-		suite.Run(tc.name, func() {
-			if tc.mock != nil {
-				tc.mock()
+		suite.Run(tc.Name, func() {
+			if tc.Mock != nil {
+				tc.Mock()
 			}
 
-			got, err := suite.PostService.EditPost(tc.args.ctx, tc.args.req, tc.args.id)
-			if tc.wantErr {
+			got, err := suite.PostService.EditPost(tc.Args.ctx, tc.Args.req, tc.Args.id)
+			if tc.WantErr {
 				suite.Error(err)
-				suite.Equal(tc.err, err)
+				suite.Equal(tc.Err, err)
 			} else {
 				suite.NoError(err)
-				suite.Equal(tc.want, got)
+				suite.Equal(tc.Want, got)
 			}
 		})
 	}

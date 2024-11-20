@@ -3,6 +3,7 @@ package handler
 import (
 	"aura/internal/model"
 	"aura/internal/util"
+	test "aura/tests/app"
 	"context"
 	"errors"
 
@@ -16,16 +17,10 @@ func (suite *ServiceTestSuite) TestDeletePost() {
 		id  uint
 	}
 
-	testCases := []struct {
-		name    string
-		mock    func()
-		args    args
-		wantErr bool
-		err     error
-	}{
+	testCases := []test.TestCase[args, error]{
 		{
-			name: "success",
-			mock: func() {
+			Name: "success",
+			Mock: func() {
 				userID, err := util.GetUserID(suite.ctx)
 				suite.NoError(err)
 
@@ -34,63 +29,62 @@ func (suite *ServiceTestSuite) TestDeletePost() {
 				}, nil).Once()
 				suite.postStorage.On("Delete", mock.Anything, mock.Anything).Return(nil).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				id:  1,
 			},
-			wantErr: false,
-			err:     nil,
+			WantErr: false,
+			Err:     nil,
 		},
 		{
-			name: "user id not found in context",
-			args: args{
+			Name: "user id not found in context",
+			Args: args{
 				ctx: context.TODO(),
 				id:  1,
 			},
-			wantErr: true,
-			err:     errors.New("user id not found in context"),
+			WantErr: true,
+			Err:     errors.New("user id not found in context"),
 		},
 		{
-			name: "post not found",
-			mock: func() {
+			Name: "post not found",
+			Mock: func() {
 				suite.postStorage.On("FindByID", mock.Anything, mock.Anything).Return(&model.Post{}, gorm.ErrRecordNotFound).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				id:  1,
 			},
-			wantErr: true,
-			err:     gorm.ErrRecordNotFound,
+			WantErr: true,
+			Err:     gorm.ErrRecordNotFound,
 		},
 		{
-			name: "no permission",
-			mock: func() {
+			Name: "no permission",
+			Mock: func() {
 				suite.postStorage.On("FindByID", mock.Anything, mock.Anything).Return(&model.Post{
 					ID:     1,
 					UserID: 2,
 				}, nil).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				id:  1,
 			},
-			wantErr: true,
-			err:     ErrNoPermission,
+			WantErr: true,
+			Err:     ErrNoPermission,
 		},
 	}
 
 	for _, tc := range testCases {
-		suite.Run(tc.name, func() {
-			if tc.mock != nil {
-				tc.mock()
+		suite.Run(tc.Name, func() {
+			if tc.Mock != nil {
+				tc.Mock()
 			}
 
-			err := suite.PostService.DeletePost(tc.args.ctx, tc.args.id)
-			if tc.wantErr {
+			err := suite.PostService.DeletePost(tc.Args.ctx, tc.Args.id)
+			if tc.WantErr {
 				suite.Error(err)
-				suite.Equal(tc.err, err)
+				suite.Equal(tc.Err, err)
 			} else {
-				suite.Equal(tc.err, err)
 				suite.NoError(err)
 			}
 		})

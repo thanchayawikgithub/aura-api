@@ -3,6 +3,7 @@ package handler
 import (
 	"aura/internal/model"
 	"aura/internal/util"
+	test "aura/tests/app"
 	"context"
 	"errors"
 	"time"
@@ -17,16 +18,10 @@ func (suite *ServiceTestSuite) TestDeleteComment() {
 		id  uint
 	}
 
-	testCases := []struct {
-		name    string
-		mock    func()
-		args    args
-		wantErr bool
-		err     error
-	}{
+	testCases := []test.TestCase[args, error]{
 		{
-			name: "delete comment success",
-			mock: func() {
+			Name: "delete comment success",
+			Mock: func() {
 				userID, err := util.GetUserID(suite.ctx)
 				suite.NoError(err)
 
@@ -39,37 +34,37 @@ func (suite *ServiceTestSuite) TestDeleteComment() {
 				}, nil).Once()
 				suite.commentStorage.On("Delete", mock.Anything, mock.Anything).Return(nil).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				id:  1,
 			},
-			wantErr: false,
-			err:     nil,
+			WantErr: false,
+			Err:     nil,
 		},
 		{
-			name: "user id not found in context",
-			args: args{
+			Name: "user id not found in context",
+			Args: args{
 				ctx: context.TODO(),
 				id:  1,
 			},
-			wantErr: true,
-			err:     errors.New("user id not found in context"),
+			WantErr: true,
+			Err:     errors.New("user id not found in context"),
 		},
 		{
-			name: "comment not found",
-			mock: func() {
+			Name: "comment not found",
+			Mock: func() {
 				suite.commentStorage.On("FindByID", mock.Anything, mock.Anything).Return(&model.Comment{}, gorm.ErrRecordNotFound).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				id:  1,
 			},
-			wantErr: true,
-			err:     gorm.ErrRecordNotFound,
+			WantErr: true,
+			Err:     gorm.ErrRecordNotFound,
 		},
 		{
-			name: "no permission",
-			mock: func() {
+			Name: "no permission",
+			Mock: func() {
 				suite.commentStorage.On("FindByID", mock.Anything, mock.Anything).Return(&model.Comment{
 					ID:        1,
 					UserID:    2,
@@ -78,27 +73,26 @@ func (suite *ServiceTestSuite) TestDeleteComment() {
 					CreatedAt: time.Now(),
 				}, nil).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				id:  1,
 			},
-			wantErr: true,
-			err:     ErrNoPermission,
+			WantErr: true,
+			Err:     ErrNoPermission,
 		},
 	}
 
 	for _, tc := range testCases {
-		suite.Run(tc.name, func() {
-			if tc.mock != nil {
-				tc.mock()
+		suite.Run(tc.Name, func() {
+			if tc.Mock != nil {
+				tc.Mock()
 			}
 
-			err := suite.CommentService.DeleteComment(tc.args.ctx, tc.args.id)
-			if tc.wantErr {
+			err := suite.CommentService.DeleteComment(tc.Args.ctx, tc.Args.id)
+			if tc.WantErr {
 				suite.Error(err)
-				suite.Equal(tc.err, err)
+				suite.Equal(tc.Err, err)
 			} else {
-				suite.Equal(tc.err, err)
 				suite.NoError(err)
 			}
 		})

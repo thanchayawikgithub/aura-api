@@ -4,6 +4,7 @@ import (
 	"aura/auraapi"
 	"aura/auradomain"
 	"aura/internal/model"
+	test "aura/tests/app"
 	"context"
 
 	"github.com/stretchr/testify/mock"
@@ -15,17 +16,10 @@ func (suite *ServiceTestSuite) TestGetUserByID() {
 		ctx context.Context
 		id  uint
 	}
-	testCases := []struct {
-		name    string
-		mock    func()
-		args    args
-		want    *auraapi.GetUserByIdRes
-		wantErr bool
-		err     error
-	}{
+	testCases := []test.TestCase[args, *auraapi.GetUserByIdRes]{
 		{
-			name: "success",
-			mock: func() {
+			Name: "success",
+			Mock: func() {
 				suite.userStorage.On("FindByID", mock.Anything, mock.Anything).Return(&model.User{
 					ID:          1,
 					Email:       "test@test.com",
@@ -34,11 +28,11 @@ func (suite *ServiceTestSuite) TestGetUserByID() {
 					DisplayName: "test",
 				}, nil).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				id:  1,
 			},
-			want: &auraapi.GetUserByIdRes{
+			Want: &auraapi.GetUserByIdRes{
 				User: &auradomain.User{
 					ID:          1,
 					Email:       "test@test.com",
@@ -46,34 +40,34 @@ func (suite *ServiceTestSuite) TestGetUserByID() {
 					DisplayName: "test",
 				},
 			},
-			wantErr: false,
-			err:     nil,
+			WantErr: false,
+			Err:     nil,
 		},
 		{
-			name: "user not found",
-			mock: func() {
+			Name: "user not found",
+			Mock: func() {
 				suite.userStorage.On("FindByID", mock.Anything, mock.Anything).Return(&model.User{}, gorm.ErrRecordNotFound).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				id:  100,
 			},
-			want:    nil,
-			wantErr: true,
-			err:     gorm.ErrRecordNotFound,
+			Want:    nil,
+			WantErr: true,
+			Err:     gorm.ErrRecordNotFound,
 		},
 	}
 
 	for _, tc := range testCases {
-		suite.Run(tc.name, func() {
-			tc.mock()
-			got, err := suite.UserService.GetUserByID(tc.args.ctx, tc.args.id)
-			if tc.wantErr {
+		suite.Run(tc.Name, func() {
+			tc.Mock()
+			got, err := suite.UserService.GetUserByID(tc.Args.ctx, tc.Args.id)
+			if tc.WantErr {
 				suite.Error(err)
-				suite.Equal(tc.err, err)
+				suite.Equal(tc.Err, err)
 			} else {
 				suite.NoError(err)
-				suite.Equal(tc.want, got)
+				suite.Equal(tc.Want, got)
 			}
 		})
 	}

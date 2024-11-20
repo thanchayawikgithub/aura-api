@@ -4,6 +4,7 @@ import (
 	"aura/auraapi"
 	"aura/auradomain"
 	"aura/internal/model"
+	test "aura/tests/app"
 	"context"
 
 	"github.com/stretchr/testify/mock"
@@ -17,17 +18,10 @@ func (suite *ServiceTestSuite) TestAddUser() {
 		req *auraapi.AddUserReq
 	}
 
-	testCases := []struct {
-		name    string
-		mock    func()
-		args    args
-		want    *auraapi.AddUserRes
-		wantErr bool
-		err     error
-	}{
+	testCases := []test.TestCase[args, *auraapi.AddUserRes]{
 		{
-			name: "add user success",
-			mock: func() {
+			Name: "add user success",
+			Mock: func() {
 				suite.userStorage.On("Save", mock.Anything, mock.Anything).Return(&model.User{
 					ID:          3,
 					Email:       "test@test.com",
@@ -35,7 +29,7 @@ func (suite *ServiceTestSuite) TestAddUser() {
 					DisplayName: "test",
 				}, nil).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				req: &auraapi.AddUserReq{
 					Email:       "test@test.com",
@@ -44,7 +38,7 @@ func (suite *ServiceTestSuite) TestAddUser() {
 					Password:    "password",
 				},
 			},
-			want: &auraapi.AddUserRes{
+			Want: &auraapi.AddUserRes{
 				User: &auradomain.User{
 					ID:          3,
 					Email:       "test@test.com",
@@ -52,15 +46,15 @@ func (suite *ServiceTestSuite) TestAddUser() {
 					DisplayName: "test",
 				},
 			},
-			wantErr: false,
-			err:     nil,
+			WantErr: false,
+			Err:     nil,
 		},
 		{
-			name: "storage error",
-			mock: func() {
+			Name: "storage error",
+			Mock: func() {
 				suite.userStorage.On("Save", mock.Anything, mock.Anything).Return(&model.User{}, gorm.ErrInvalidDB).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				req: &auraapi.AddUserReq{
 					Email:       "test@test.com",
@@ -69,25 +63,25 @@ func (suite *ServiceTestSuite) TestAddUser() {
 					Password:    "password",
 				},
 			},
-			want:    &auraapi.AddUserRes{},
-			wantErr: true,
-			err:     gorm.ErrInvalidDB,
+			Want:    &auraapi.AddUserRes{},
+			WantErr: true,
+			Err:     gorm.ErrInvalidDB,
 		},
 	}
 
 	for _, tc := range testCases {
-		suite.Run(tc.name, func() {
-			if tc.mock != nil {
-				tc.mock()
+		suite.Run(tc.Name, func() {
+			if tc.Mock != nil {
+				tc.Mock()
 			}
 
-			got, err := suite.UserService.AddUser(tc.args.ctx, tc.args.req)
-			if tc.wantErr {
+			got, err := suite.UserService.AddUser(tc.Args.ctx, tc.Args.req)
+			if tc.WantErr {
 				suite.Error(err)
-				suite.Equal(tc.err, err)
+				suite.Equal(tc.Err, err)
 			} else {
 				suite.NoError(err)
-				suite.Equal(tc.want, got)
+				suite.Equal(tc.Want, got)
 			}
 		})
 	}

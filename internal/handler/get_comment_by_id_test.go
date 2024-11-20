@@ -4,6 +4,7 @@ import (
 	"aura/auraapi"
 	"aura/auradomain"
 	"aura/internal/model"
+	test "aura/tests/app"
 	"context"
 
 	"github.com/stretchr/testify/mock"
@@ -16,55 +17,50 @@ func (suite *ServiceTestSuite) TestGetCommentByID() {
 		id  uint
 	}
 
-	testCases := []struct {
-		name    string
-		mock    func()
-		args    args
-		want    *auraapi.GetCommentByIdRes
-		wantErr bool
-		err     error
-	}{
+	testCases := []test.TestCase[args, *auraapi.GetCommentByIdRes]{
 		{
-			name: "success",
-			mock: func() {
+			Name: "Success",
+			Mock: func() {
 				suite.commentStorage.On("FindByID", mock.Anything, mock.Anything).Return(&model.Comment{}, nil).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				id:  1,
 			},
-			want: &auraapi.GetCommentByIdRes{
+			Want: &auraapi.GetCommentByIdRes{
 				Comment: &auradomain.Comment{},
 			},
-			wantErr: false,
-			err:     nil,
+			WantErr: false,
+			Err:     nil,
 		},
 		{
-			name: "comment not found",
-			mock: func() {
+			Name: "comment not found",
+			Mock: func() {
 				suite.commentStorage.On("FindByID", mock.Anything, mock.Anything).Return(&model.Comment{}, gorm.ErrRecordNotFound).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				id:  1,
 			},
-			wantErr: true,
-			err:     gorm.ErrRecordNotFound,
+			WantErr: true,
+			Err:     gorm.ErrRecordNotFound,
 		},
 	}
 
 	for _, tc := range testCases {
-		suite.Run(tc.name, func() {
-			tc.mock()
-		})
+		suite.Run(tc.Name, func() {
+			if tc.Mock != nil {
+				tc.Mock()
+			}
 
-		got, err := suite.CommentService.GetCommentByID(tc.args.ctx, tc.args.id)
-		if tc.wantErr {
-			suite.Error(err)
-			suite.Equal(tc.err, err)
-		} else {
-			suite.NoError(err)
-			suite.Equal(tc.want, got)
-		}
+			got, err := suite.CommentService.GetCommentByID(tc.Args.ctx, tc.Args.id)
+			if tc.WantErr {
+				suite.Error(err)
+				suite.Equal(tc.Err, err)
+			} else {
+				suite.NoError(err)
+				suite.Equal(tc.Want, got)
+			}
+		})
 	}
 }

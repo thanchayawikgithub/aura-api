@@ -4,6 +4,7 @@ import (
 	"aura/auraapi"
 	"aura/auradomain"
 	"aura/internal/model"
+	test "aura/tests/app"
 	"context"
 
 	"github.com/stretchr/testify/mock"
@@ -16,17 +17,10 @@ func (suite *ServiceTestSuite) TestAddComment() {
 		req *auraapi.AddCommentReq
 	}
 
-	testCases := []struct {
-		name    string
-		mock    func()
-		args    args
-		want    *auraapi.AddCommentRes
-		wantErr bool
-		err     error
-	}{
+	testCases := []test.TestCase[args, *auraapi.AddCommentRes]{
 		{
-			name: "add comment success",
-			mock: func() {
+			Name: "add comment success",
+			Mock: func() {
 				suite.commentStorage.On("Save", mock.Anything, mock.Anything).Return(&model.Comment{
 					ID:      1,
 					Content: "test",
@@ -34,7 +28,7 @@ func (suite *ServiceTestSuite) TestAddComment() {
 					UserID:  1,
 				}, nil).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				req: &auraapi.AddCommentReq{
 					Content: "test",
@@ -42,7 +36,7 @@ func (suite *ServiceTestSuite) TestAddComment() {
 					UserID:  1,
 				},
 			},
-			want: &auraapi.AddCommentRes{
+			Want: &auraapi.AddCommentRes{
 				Comment: &auradomain.Comment{
 					ID:      1,
 					Content: "test",
@@ -50,15 +44,15 @@ func (suite *ServiceTestSuite) TestAddComment() {
 					UserID:  1,
 				},
 			},
-			wantErr: false,
-			err:     nil,
+			WantErr: false,
+			Err:     nil,
 		},
 		{
-			name: "storage error",
-			mock: func() {
+			Name: "storage error",
+			Mock: func() {
 				suite.commentStorage.On("Save", mock.Anything, mock.Anything).Return(&model.Comment{}, gorm.ErrInvalidData).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				req: &auraapi.AddCommentReq{
 					Content: "test",
@@ -66,25 +60,25 @@ func (suite *ServiceTestSuite) TestAddComment() {
 					UserID:  1,
 				},
 			},
-			want:    nil,
-			wantErr: true,
-			err:     gorm.ErrInvalidData,
+			Want:    nil,
+			WantErr: true,
+			Err:     gorm.ErrInvalidData,
 		},
 	}
 
 	for _, tc := range testCases {
-		suite.Run(tc.name, func() {
-			if tc.mock != nil {
-				tc.mock()
+		suite.Run(tc.Name, func() {
+			if tc.Mock != nil {
+				tc.Mock()
 			}
 
-			got, err := suite.CommentService.AddComment(tc.args.ctx, tc.args.req)
-			if tc.wantErr {
+			got, err := suite.CommentService.AddComment(tc.Args.ctx, tc.Args.req)
+			if tc.WantErr {
 				suite.Error(err)
-				suite.Equal(tc.err, err)
+				suite.Equal(tc.Err, err)
 			} else {
 				suite.NoError(err)
-				suite.Equal(tc.want, got)
+				suite.Equal(tc.Want, got)
 			}
 		})
 	}

@@ -4,6 +4,7 @@ import (
 	"aura/auraapi"
 	"aura/auradomain"
 	"aura/internal/model"
+	test "aura/tests/app"
 	"context"
 
 	"github.com/stretchr/testify/mock"
@@ -16,60 +17,55 @@ func (suite *ServiceTestSuite) TestGetPostByID() {
 		id  uint
 	}
 
-	testCases := []struct {
-		name    string
-		mock    func()
-		args    args
-		want    *auraapi.GetPostByIdRes
-		wantErr bool
-		err     error
-	}{
+	testCases := []test.TestCase[args, *auraapi.GetPostByIdRes]{
 		{
-			name: "success",
-			mock: func() {
+			Name: "success",
+			Mock: func() {
 				suite.postStorage.On("WithPreload", mock.Anything, mock.Anything).Return(suite.postStorage).Once()
 				suite.postStorage.On("FindByID", mock.Anything, mock.Anything).Return(&model.Post{}, nil).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				id:  1,
 			},
-			want: &auraapi.GetPostByIdRes{
+			Want: &auraapi.GetPostByIdRes{
 				Post:     &auradomain.Post{},
 				User:     &auradomain.User{},
 				Comments: []*auradomain.Comment{},
 			},
-			wantErr: false,
-			err:     nil,
+			WantErr: false,
+			Err:     nil,
 		},
 		{
-			name: "post not found",
-			mock: func() {
+			Name: "post not found",
+			Mock: func() {
 				suite.postStorage.On("WithPreload", mock.Anything, mock.Anything).Return(suite.postStorage).Once()
 				suite.postStorage.On("FindByID", mock.Anything, mock.Anything).Return(&model.Post{}, gorm.ErrRecordNotFound).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				id:  1,
 			},
-			wantErr: true,
-			err:     gorm.ErrRecordNotFound,
+			WantErr: true,
+			Err:     gorm.ErrRecordNotFound,
 		},
 	}
 
 	for _, tc := range testCases {
-		suite.Run(tc.name, func() {
-			tc.mock()
-		})
+		suite.Run(tc.Name, func() {
+			if tc.Mock != nil {
+				tc.Mock()
+			}
 
-		got, err := suite.PostService.GetPostByID(tc.args.ctx, tc.args.id)
-		if tc.wantErr {
-			suite.Error(err)
-			suite.Equal(tc.err, err)
-		} else {
-			suite.NoError(err)
-			suite.Equal(tc.want, got)
-		}
+			got, err := suite.PostService.GetPostByID(tc.Args.ctx, tc.Args.id)
+			if tc.WantErr {
+				suite.Error(err)
+				suite.Equal(tc.Err, err)
+			} else {
+				suite.NoError(err)
+				suite.Equal(tc.Want, got)
+			}
+		})
 	}
 
 }

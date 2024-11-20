@@ -56,6 +56,9 @@ func main() {
 	comment := v1.Group("/comment", mdws...)
 	setUpComment(comment, adapter, mdwAuth)
 
+	upload := v1.Group("/upload", mdws...)
+	setUpUpload(upload, adapter, mdwAuth)
+
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", cfg.Server.Port)))
 }
 
@@ -81,6 +84,10 @@ func setUpComment(comment *echo.Group, adapter *httpadapter.Adapter, mdwAuth ech
 	comment.POST("", adapter.AddComment)
 	comment.GET(pathParamCommentID, adapter.GetCommentByID, mdwAuth)
 	comment.DELETE(pathParamCommentID, adapter.DeleteComment, mdwAuth)
+}
+
+func setUpUpload(upload *echo.Group, adapter *httpadapter.Adapter, mdwAuth echo.MiddlewareFunc) {
+	upload.POST("", adapter.UploadFile, mdwAuth)
 }
 
 func setupMiddleware(e *echo.Echo) {
