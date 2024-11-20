@@ -73,7 +73,7 @@ func setUpUser(user *echo.Group, adapter *httpadapter.Adapter, mdwAuth echo.Midd
 }
 
 func setUpPost(post *echo.Group, adapter *httpadapter.Adapter, mdwAuth echo.MiddlewareFunc) {
-	post.POST("", adapter.AddPost)
+	post.POST("", adapter.AddPost, mdwAuth)
 	post.GET(pathParamPostID, adapter.GetPostByID, mdwAuth)
 	post.GET("/user"+pathParamUserID, adapter.GetPostsByUserID, mdwAuth)
 	post.PATCH(pathParamPostID, adapter.EditPost, mdwAuth)

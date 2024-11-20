@@ -1,13 +1,17 @@
 package handler
 
 import (
+	"aura/internal/client"
 	"aura/internal/config"
 	"aura/internal/storage"
 )
 
 type (
 	Service struct {
-		cfg                 *config.Config
+		cfg *config.Config
+
+		MinioClient client.IMinIOClient
+
 		UserStorage         storage.IUserStorage
 		PostStorage         storage.IPostStorage
 		RefreshTokenStorage storage.IRefreshTokenStorage
@@ -34,6 +38,7 @@ type (
 func New(s *storage.Storage, cfg *config.Config) *Service {
 	return &Service{
 		cfg:                 cfg,
+		MinioClient:         client.NewMinioClient(&cfg.MinIO),
 		UserStorage:         storage.NewUserStorage(s),
 		PostStorage:         storage.NewPostStorage(s),
 		RefreshTokenStorage: storage.NewRefreshTokenStorage(s),

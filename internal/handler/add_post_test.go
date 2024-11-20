@@ -25,7 +25,6 @@ func (suite *ServiceTestSuite) TestAddPost() {
 				suite.postStorage.On("Save", mock.Anything, mock.Anything).Return(&model.Post{
 					ID:      2,
 					Content: "test",
-					UserID:  1,
 				}, nil).Once()
 			},
 			Args: args{
@@ -38,7 +37,6 @@ func (suite *ServiceTestSuite) TestAddPost() {
 				Post: &auradomain.Post{
 					ID:      2,
 					Content: "test",
-					UserID:  1,
 				},
 			},
 			WantErr: false,

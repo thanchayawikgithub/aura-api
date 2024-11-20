@@ -14,6 +14,7 @@ type (
 		Server   Server   `mapstructure:"server" validate:"required"`
 		Database Database `mapstructure:"database" validate:"required"`
 		JWT      JWT      `mapstructure:"jwt" validate:"required"`
+		MinIO    MinIO    `mapstructure:"minio" validate:"required"`
 	}
 
 	Server struct {
@@ -41,6 +42,13 @@ type (
 		SecretKey             string        `mapstructure:"secretKey" validate:"required"`
 		AccessTokenExpiresAt  time.Duration `mapstructure:"accessTokenExpiresAt" validate:"required"`
 		RefreshTokenExpiresAt time.Duration `mapstructure:"refreshTokenExpiresAt" validate:"required"`
+	}
+
+	MinIO struct {
+		Endpoint        string `mapstructure:"endpoint" validate:"required"`
+		AccessKeyID     string `mapstructure:"accessKeyID" validate:"required"`
+		SecretAccessKey string `mapstructure:"secretAccessKey" validate:"required"`
+		UseSSL          bool   `mapstructure:"useSSL" validate:"required"`
 	}
 )
 

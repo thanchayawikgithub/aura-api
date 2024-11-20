@@ -17,6 +17,7 @@ type Post struct {
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 	Content   string         `gorm:"column:content"`
+	ImageURL  *string        `gorm:"column:image_url"`
 	UserID    uint
 	User      User
 	Comments  []Comment
