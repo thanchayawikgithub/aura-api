@@ -23,12 +23,12 @@ func (a *Adapter) Login(c echo.Context) error {
 	}
 
 	// Generate JWT token
-	accessToken, err := auth.GenerateAccessToken(result.UserID, result.Email, &a.config.JWT)
+	accessToken, err := auth.GenerateAccessToken(result.UserID, result.Email, &a.cfg.JWT)
 	if err != nil {
 		return response.InternalServerError(c, err.Error())
 	}
 
-	refreshToken, err := auth.GenerateRefreshToken(result.UserID, result.Email, &a.config.JWT, nil)
+	refreshToken, err := auth.GenerateRefreshToken(result.UserID, result.Email, &a.cfg.JWT, nil)
 	if err != nil {
 		return response.InternalServerError(c, err.Error())
 	}

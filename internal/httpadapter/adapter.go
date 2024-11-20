@@ -9,7 +9,7 @@ import (
 )
 
 type Adapter struct {
-	config              *config.Config
+	cfg                 *config.Config
 	service             *handler.Service
 	userService         itf.IUserService
 	postService         itf.IPostService
@@ -19,7 +19,7 @@ type Adapter struct {
 
 func New(s *handler.Service, cfg *config.Config) *Adapter {
 	return &Adapter{
-		config:              cfg,
+		cfg:                 cfg,
 		service:             s,
 		userService:         handler.NewUserService(s),
 		refreshTokenService: handler.NewRefreshTokenService(s),

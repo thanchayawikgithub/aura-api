@@ -4,6 +4,7 @@ import (
 	"aura/auraapi"
 	"aura/auradomain"
 	"aura/internal/model"
+	test "aura/tests/app"
 	"context"
 
 	"github.com/stretchr/testify/mock"
@@ -17,66 +18,59 @@ func (suite *ServiceTestSuite) TestAddPost() {
 		req *auraapi.AddPostReq
 	}
 
-	testCases := []struct {
-		name    string
-		mock    func()
-		args    args
-		want    *auraapi.AddPostRes
-		wantErr bool
-		err     error
-	}{
+	testCases := []test.TestCase[args, *auraapi.AddPostRes]{
 		{
-			name: "add post success",
-			mock: func() {
+			Name: "add post success",
+			Mock: func() {
 				suite.postStorage.On("Save", mock.Anything, mock.Anything).Return(&model.Post{
 					ID:      2,
 					Content: "test",
 					UserID:  1,
 				}, nil).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				req: &auraapi.AddPostReq{
 					Content: "test",
 				},
 			},
-			want: &auraapi.AddPostRes{
+			Want: &auraapi.AddPostRes{
 				Post: &auradomain.Post{
 					ID:      2,
 					Content: "test",
 					UserID:  1,
 				},
 			},
-			wantErr: false,
-			err:     nil,
+			WantErr: false,
+			Err:     nil,
 		},
 		{
-			name: "storage error",
-			mock: func() {
+			Name: "storage error",
+			Mock: func() {
 				suite.postStorage.On("Save", mock.Anything, mock.Anything).Return(&model.Post{}, gorm.ErrInvalidDB).Once()
 			},
-			args: args{
+			Args: args{
 				ctx: suite.ctx,
 				req: &auraapi.AddPostReq{
 					Content: "test",
 				},
 			},
-			want:    nil,
-			wantErr: true,
-			err:     gorm.ErrInvalidDB,
+			Want:    nil,
+			WantErr: true,
+			Err:     gorm.ErrInvalidDB,
 		},
 	}
 
 	for _, testCase := range testCases {
-		suite.Run(testCase.name, func() {
-			testCase.mock()
-			got, err := suite.PostService.AddPost(testCase.args.ctx, testCase.args.req)
-			if testCase.wantErr {
+		suite.Run(testCase.Name, func() {
+			testCase.Mock()
+			got, err := suite.PostService.AddPost(testCase.Args.ctx, testCase.Args.req)
+			if testCase.WantErr {
 				suite.Error(err)
-				suite.Equal(testCase.err, err)
+				suite.Equal(testCase.Err, err)
 			} else {
 				suite.NoError(err)
-				suite.Equal(testCase.want, got)
+				suite.Equal(testCase.Want, got)
 			}
 		})
 	}
