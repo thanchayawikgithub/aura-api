@@ -16,7 +16,7 @@ func (suite *ServiceTestSuite) TestGetUserByID() {
 		ctx context.Context
 		id  uint
 	}
-	testCases := []test.TestCase[args, *auraapi.GetUserByIdRes]{
+	testCases := []test.ServiceTestCase[args, *auraapi.GetUserByIdRes]{
 		{
 			Name: "success",
 			Mock: func() {

@@ -18,7 +18,7 @@ func (suite *ServiceTestSuite) TestDeleteComment() {
 		id  uint
 	}
 
-	testCases := []test.TestCase[args, error]{
+	testCases := []test.ServiceTestCase[args, error]{
 		{
 			Name: "delete comment success",
 			Mock: func() {

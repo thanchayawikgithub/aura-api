@@ -20,7 +20,7 @@ func (suite *ServiceTestSuite) TestEditPost() {
 		id  uint
 	}
 
-	testCases := []test.TestCase[args, *auraapi.EditPostRes]{
+	testCases := []test.ServiceTestCase[args, *auraapi.EditPostRes]{
 		{
 			Name: "success",
 			Args: args{

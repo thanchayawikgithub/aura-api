@@ -4,8 +4,12 @@ import (
 	"aura/internal/config"
 	"aura/internal/handler"
 	"aura/tests/app/service"
+	"encoding/json"
+	"net/http/httptest"
+	"strings"
 	"testing"
 
+	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -29,4 +33,27 @@ func (suite *AdapterTestSuite) SetupSuite() {
 		service:     new(handler.Service),
 		userService: suite.userService,
 	}
+}
+
+func GenerateMockEchoContext(httpMethod, path string, body map[string]interface{}) echo.Context {
+	var reqBody *strings.Reader
+	if body != nil {
+		jsonBytes, err := json.Marshal(body)
+		if err != nil {
+			panic(err)
+		}
+		reqBody = strings.NewReader(string(jsonBytes))
+	} else {
+		reqBody = strings.NewReader("")
+	}
+
+	// Create proper request and context
+	req := httptest.NewRequest(httpMethod, path, reqBody)
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	e := echo.New()
+	e.Validator = NewCustomValidator()
+	ctx := e.NewContext(req, rec)
+
+	return ctx
 }

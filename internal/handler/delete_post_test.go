@@ -17,7 +17,7 @@ func (suite *ServiceTestSuite) TestDeletePost() {
 		id  uint
 	}
 
-	testCases := []test.TestCase[args, error]{
+	testCases := []test.ServiceTestCase[args, error]{
 		{
 			Name: "success",
 			Mock: func() {

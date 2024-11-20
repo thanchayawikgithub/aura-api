@@ -17,7 +17,7 @@ func (suite *ServiceTestSuite) TestAddComment() {
 		req *auraapi.AddCommentReq
 	}
 
-	testCases := []test.TestCase[args, *auraapi.AddCommentRes]{
+	testCases := []test.ServiceTestCase[args, *auraapi.AddCommentRes]{
 		{
 			Name: "add comment success",
 			Mock: func() {

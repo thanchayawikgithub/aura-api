@@ -17,7 +17,7 @@ func (suite *ServiceTestSuite) TestGetPostByID() {
 		id  uint
 	}
 
-	testCases := []test.TestCase[args, *auraapi.GetPostByIdRes]{
+	testCases := []test.ServiceTestCase[args, *auraapi.GetPostByIdRes]{
 		{
 			Name: "success",
 			Mock: func() {

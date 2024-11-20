@@ -17,7 +17,7 @@ func (suite *ServiceTestSuite) TestGetCommentByID() {
 		id  uint
 	}
 
-	testCases := []test.TestCase[args, *auraapi.GetCommentByIdRes]{
+	testCases := []test.ServiceTestCase[args, *auraapi.GetCommentByIdRes]{
 		{
 			Name: "Success",
 			Mock: func() {

@@ -18,7 +18,7 @@ func (suite *ServiceTestSuite) TestAddPost() {
 		req *auraapi.AddPostReq
 	}
 
-	testCases := []test.TestCase[args, *auraapi.AddPostRes]{
+	testCases := []test.ServiceTestCase[args, *auraapi.AddPostRes]{
 		{
 			Name: "add post success",
 			Mock: func() {

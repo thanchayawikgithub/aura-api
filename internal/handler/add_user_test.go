@@ -18,7 +18,7 @@ func (suite *ServiceTestSuite) TestAddUser() {
 		req *auraapi.AddUserReq
 	}
 
-	testCases := []test.TestCase[args, *auraapi.AddUserRes]{
+	testCases := []test.ServiceTestCase[args, *auraapi.AddUserRes]{
 		{
 			Name: "add user success",
 			Mock: func() {

@@ -14,6 +14,7 @@ func (a *Adapter) AddUser(c echo.Context) error {
 	}
 
 	result, err := a.userService.AddUser(c.Request().Context(), req)
+
 	if err != nil {
 		return response.InternalServerError(c, err.Error())
 	}
