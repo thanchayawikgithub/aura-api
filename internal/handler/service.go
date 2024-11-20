@@ -33,6 +33,10 @@ type (
 	CommentService struct {
 		*Service
 	}
+
+	AttachmentService struct {
+		*Service
+	}
 )
 
 func New(s *storage.Storage, cfg *config.Config) *Service {
@@ -66,6 +70,12 @@ func NewRefreshTokenService(service *Service) *RefreshTokenService {
 
 func NewCommentService(service *Service) *CommentService {
 	return &CommentService{
+		Service: service,
+	}
+}
+
+func NewAttachmentService(service *Service) *AttachmentService {
+	return &AttachmentService{
 		Service: service,
 	}
 }
