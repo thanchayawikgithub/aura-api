@@ -13,28 +13,18 @@ pipeline {
       }
     }
 
-    // stage('Build') {
-    //   steps {
-    //     sh 'go build -o ./bin/aura ./cmd/aura/main.go'
-    //   }
-    // }
-
     stage('Test') {
       steps {
         sh 'go test ./...'
       }
     }
 
-    // stage('Docker Build') {
-    //   steps {
-    //     sh 'docker build -t aura-app .'
-    //   }
-    // }
-
+    
     stage('Deploy Local') {
       steps {
-        sh 'docker-compose down'
-        sh 'docker-compose up -d --build'
+        sh 'docker compose version'
+        sh 'docker compose down'
+        sh 'docker compose up -d --build'
       }
     }
   }
