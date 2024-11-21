@@ -3,6 +3,7 @@ pipeline {
 
   tools {
     go '1.22.6'
+    docker '27.3.1'
   }
 
   stages {
@@ -20,7 +21,7 @@ pipeline {
 
     stage('Test') {
       steps {
-        sh 'go test ./... -coverprofile=coverage.out'
+        sh 'go test ./...'
       }
     }
 
