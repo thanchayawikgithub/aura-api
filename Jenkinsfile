@@ -15,9 +15,9 @@ pipeline {
       }
     }
 
-    stage('Deploy Local') {
+    stage('Deploy') {
       steps {
-        sh 'docker compose down'
+        sh 'docker compose down -v'
         sh 'docker compose up --build'
       }
     }
