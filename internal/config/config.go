@@ -56,10 +56,19 @@ type (
 	}
 )
 
-func LoadConfig() *Config {
-	viper.SetConfigName("config.local")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath("./internal/etc")
+const (
+	defaultConfigPath = "./internal/etc"
+	defaultConfigName = "config"
+)
+
+func LoadConfig(name string) *Config {
+	if name == "" {
+		name = defaultConfigName
+	}
+
+	viper.SetConfigName(name)
+	viper.AddConfigPath(defaultConfigPath)
+	viper.SetConfigType("yml")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
 

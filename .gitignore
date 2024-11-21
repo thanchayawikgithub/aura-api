@@ -24,6 +24,7 @@ go.work.sum
 
 # config file
 config.local.yml
+config.yml
 
 # uploads
 uploads/

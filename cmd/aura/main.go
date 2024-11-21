@@ -22,7 +22,7 @@ const (
 )
 
 func main() {
-	cfg := config.LoadConfig()
+	cfg := config.LoadConfig("")
 
 	storage := storage.New(&cfg.Database)
 	service := handler.New(storage, cfg)

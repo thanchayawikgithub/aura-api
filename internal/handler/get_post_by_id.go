@@ -5,6 +5,7 @@ import (
 	"aura/internal/model"
 	"context"
 	"fmt"
+	"log"
 )
 
 func (s *PostService) GetPostByID(ctx context.Context, id uint) (*auraapi.GetPostByIdRes, error) {
@@ -12,6 +13,7 @@ func (s *PostService) GetPostByID(ctx context.Context, id uint) (*auraapi.GetPos
 
 	var cachedPost *auraapi.GetPostByIdRes
 	if err := s.RedisClient.Get(ctx, cacheKey, &cachedPost); err == nil {
+		log.Printf("cache hit: %s", cacheKey)
 		return cachedPost, nil
 	}
 
