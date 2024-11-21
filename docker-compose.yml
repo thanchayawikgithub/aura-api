@@ -2,6 +2,7 @@ version: "3.8"
 services:
   jenkins:
     container_name: aura-jenkins
+    user: root
     image: jenkins/jenkins:lts
     ports:
       - "8080:8080"

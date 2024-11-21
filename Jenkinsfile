@@ -7,6 +7,12 @@ pipeline {
   }
 
   stages {
+    stage('Checkout') {
+      steps {
+        git branch: 'main', url: 'https://github.com/thanchayawikgithub/aura-api.git'
+      }
+    }
+
     stage('Verify') {
       steps {
         sh 'docker version'
@@ -15,26 +21,11 @@ pipeline {
       }
     }
 
-    stage('Checkout') {
-      steps {
-        git branch: 'main', url: 'https://github.com/thanchayawikgithub/aura-api.git'
-      }
-    }
-
     stage('Test') {
       steps {
         sh 'go test ./...'
       }
     }
-
-    
-    // stage('Deploy Local') {
-    //   steps {
-    //     sh 'docker compose version'
-    //     sh 'docker compose down'
-    //     sh 'docker compose up -d --build'
-    //   }
-    // }
   }
 
   post {
