@@ -7,23 +7,19 @@ pipeline {
   }
 
   stages {
-    stage('Test') {
+     stage('Test') {
       steps {
         sh 'go test ./...'
       }
     }
 
-    stage('build') {
+    stage('Build & Deploy') {
       steps {
-        sh 'docker build -t aura-api:latest .'
+        sh 'docker compose down -v'
+        sh 'docker compose up --build'
       }
     }
 
-    stage('run') {
-      steps {
-        sh 'docker run -p 8081:8081 aura-api:latest'
-      }
-    }
   }
 
   post {
