@@ -4,7 +4,7 @@ pipeline {
   stages {
     stage('Test') {
       steps {
-        sh 'task test'
+        sh 'go test ./...'
       }
     }
   }
