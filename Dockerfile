@@ -8,6 +8,6 @@ RUN go mod download
 
 RUN go build -o aura cmd/aura/main.go
 
-EXPOSE 8080
+EXPOSE 8081
 
 CMD ["./aura"]
