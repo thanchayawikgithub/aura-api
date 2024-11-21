@@ -15,11 +15,10 @@ pipeline {
 
     stage('Build & Deploy') {
       steps {
-        sh 'docker compose down -v'
-        sh 'docker compose up --build'
+        sh 'docker compose down'
+        sh 'docker compose up'
       }
     }
-
   }
 
   post {

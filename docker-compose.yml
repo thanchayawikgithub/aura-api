@@ -1,27 +1,15 @@
 version: "3.8"
 services:
-  jenkins:
-    container_name: aura-jenkins
-    user: root
-    image: jenkins/jenkins:lts
+  app:
+    container_name: aura-app
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "8080:8080"
-      - "50000:50000"
-    volumes:
-      - jenkins_data:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-    group_add:
-      - docker
-  # app:
-  #   container_name: aura-app
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "8081:8081"
-  #   depends_on:
-  #     - database
-  #     - redis
+      - "8081:8081"
+    depends_on:
+      - database
+      - redis
   database:
     container_name: aura-db
     image: postgres:latest
@@ -34,7 +22,6 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
-
   redis:
     container_name: aura-redis
     image: redis:latest
