@@ -15,6 +15,7 @@ type (
 		Database Database `mapstructure:"database" validate:"required"`
 		JWT      JWT      `mapstructure:"jwt" validate:"required"`
 		MinIO    MinIO    `mapstructure:"minio" validate:"required"`
+		Redis    Redis    `mapstructure:"redis" validate:"required"`
 	}
 
 	Server struct {
@@ -48,9 +49,10 @@ type (
 	}
 
 	Redis struct {
-		Host string `mapstructure:"host" validate:"required"`
-		Port int    `mapstructure:"port" validate:"required"`
-		DB   int    `mapstructure:"db" validate:"required"`
+		Host     string        `mapstructure:"host" validate:"required"`
+		Port     int           `mapstructure:"port" validate:"required"`
+		DB       int           `mapstructure:"db"`
+		Duration time.Duration `mapstructure:"duration" validate:"required"`
 	}
 )
 

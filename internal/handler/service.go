@@ -3,6 +3,7 @@ package handler
 import (
 	"aura/internal/client"
 	"aura/internal/config"
+	"aura/internal/pkg/cache"
 	"aura/internal/storage"
 )
 
@@ -11,6 +12,7 @@ type (
 		cfg *config.Config
 
 		MinioClient client.IMinIOClient
+		RedisClient cache.IRedisClient
 
 		UserStorage         storage.IUserStorage
 		PostStorage         storage.IPostStorage
@@ -43,6 +45,7 @@ func New(s *storage.Storage, cfg *config.Config) *Service {
 	return &Service{
 		cfg:                 cfg,
 		MinioClient:         client.NewMinioClient(&cfg.MinIO),
+		RedisClient:         cache.NewRedisClient(&cfg.Redis),
 		UserStorage:         storage.NewUserStorage(s),
 		PostStorage:         storage.NewPostStorage(s),
 		RefreshTokenStorage: storage.NewRefreshTokenStorage(s),

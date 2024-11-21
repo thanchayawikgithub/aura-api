@@ -25,14 +25,14 @@ type (
 	}
 )
 
-func NewRedisClient(cfg config.Redis) *RedisClient {
+func NewRedisClient(cfg *config.Redis) *RedisClient {
 	return &RedisClient{
 		Client: redis.NewClient(&redis.Options{
 			Addr:     fmt.Sprintf("%s:%d", cfg.Host, cfg.Port),
 			Password: "",
 			DB:       cfg.DB,
 		}),
-		Duration: time.Minute * 15,
+		Duration: time.Duration(cfg.Duration) * time.Second,
 	}
 }
 
