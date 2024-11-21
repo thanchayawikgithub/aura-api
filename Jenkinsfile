@@ -7,31 +7,22 @@ pipeline {
   }
 
   stages {
-    stage('Checkout') {
-      steps {
-        // Initialize git and clone the repository
-        checkout scm: [
-          $class: 'GitSCM',
-          branches: [[name: 'main']],
-          userRemoteConfigs: [[url: 'https://github.com/thanchayawikgithub/aura-api.git']]
-        ]
-      }
-    }
-
-    stage('Verify') {
-      steps {
-        sh 'docker version'
-        sh 'docker info'
-        sh 'docker compose version'
-      }
-    }
+ 
 
     stage('Test') {
       steps {
         sh 'go test ./...'
       }
     }
-    // ... existing code ...
+
+    stage('Deploy Local') {
+      steps {
+        sh 'docker compose down'
+        sh 'docker compose up --build'
+      }
+    }
+
+
   }
 
   post {
