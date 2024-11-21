@@ -1,11 +1,6 @@
 pipeline {
   agent any
 
-  environment {
-    GO_VERSION: '1.22.6'
-    DOCKER_IMAGE: 'aura-app'
-  }
-
   stages {
     stage('Test') {
       steps {
