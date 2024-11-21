@@ -7,24 +7,14 @@ pipeline {
         git branch: 'main', url: 'https://github.com/thanchayawikgithub/aura-api.git'
       }
     }
-    
+
     stage('Build') {
-      agent {
-        docker {
-          image 'golang:1.22.6'
-        }
-      }
       steps {
         sh 'go build -o ./bin/aura ./cmd/aura/main.go'
       }
     }
 
     stage('Test') {
-      agent {
-        docker {
-          image 'golang:1.22.6'
-        }
-      }
       steps {
         sh 'go test ./... -coverprofile=coverage.out'
       }
