@@ -9,7 +9,12 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/thanchayawikgithub/aura-api.git'
+        // Initialize git and clone the repository
+        checkout scm: [
+          $class: 'GitSCM',
+          branches: [[name: 'main']],
+          userRemoteConfigs: [[url: 'https://github.com/thanchayawikgithub/aura-api.git']]
+        ]
       }
     }
 
@@ -26,6 +31,7 @@ pipeline {
         sh 'go test ./...'
       }
     }
+    // ... existing code ...
   }
 
   post {
