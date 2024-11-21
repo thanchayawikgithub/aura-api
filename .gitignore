@@ -27,3 +27,6 @@ config.local.yml
 
 # uploads
 uploads/
+
+# export
+export/
