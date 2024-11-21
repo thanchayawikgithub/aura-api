@@ -4,6 +4,7 @@ import (
 	"aura/internal/client"
 	"aura/internal/config"
 	"aura/internal/pkg/cache"
+	"aura/internal/pkg/export"
 	"aura/internal/storage"
 )
 
@@ -14,7 +15,9 @@ type (
 		MinioClient client.IMinIOClient
 		RedisClient cache.IRedisClient
 
-		UserStorage         storage.IUserStorage
+		UserStorage storage.IUserStorage
+		ExportUser  export.IExportUser
+
 		PostStorage         storage.IPostStorage
 		RefreshTokenStorage storage.IRefreshTokenStorage
 		CommentStorage      storage.ICommentStorage
@@ -42,11 +45,14 @@ type (
 )
 
 func New(s *storage.Storage, cfg *config.Config) *Service {
+	userStorage := storage.NewUserStorage(s)
 	return &Service{
-		cfg:                 cfg,
+		cfg: cfg,
+
+		ExportUser:          export.NewExportUser(userStorage),
 		MinioClient:         client.NewMinioClient(&cfg.MinIO),
 		RedisClient:         cache.NewRedisClient(&cfg.Redis),
-		UserStorage:         storage.NewUserStorage(s),
+		UserStorage:         userStorage,
 		PostStorage:         storage.NewPostStorage(s),
 		RefreshTokenStorage: storage.NewRefreshTokenStorage(s),
 		CommentStorage:      storage.NewCommentStorage(s),

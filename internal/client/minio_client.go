@@ -13,6 +13,7 @@ import (
 type (
 	IMinIOClient interface {
 		UploadFile(ctx context.Context, bucketName, objectName string, reader io.Reader, objectSize int64, opts minio.PutObjectOptions) (minio.UploadInfo, error)
+		DownloadFile(ctx context.Context, bucketName, path string, opts minio.GetObjectOptions) (*minio.Object, error)
 	}
 
 	MinIOClient struct {
@@ -34,4 +35,8 @@ func NewMinioClient(cfg *config.MinIO) *MinIOClient {
 
 func (c *MinIOClient) UploadFile(ctx context.Context, bucketName, objectName string, reader io.Reader, objectSize int64, opts minio.PutObjectOptions) (minio.UploadInfo, error) {
 	return c.Client.PutObject(ctx, bucketName, objectName, reader, objectSize, opts)
+}
+
+func (c *MinIOClient) DownloadFile(ctx context.Context, bucketName, path string, opts minio.GetObjectOptions) (*minio.Object, error) {
+	return c.Client.GetObject(ctx, bucketName, path, opts)
 }

@@ -70,6 +70,7 @@ func setUpAuth(auth *echo.Group, adapter *httpadapter.Adapter) {
 func setUpUser(user *echo.Group, adapter *httpadapter.Adapter, mdwAuth echo.MiddlewareFunc) {
 	user.POST("", adapter.AddUser)
 	user.GET(pathParamUserID, adapter.GetUserByID, mdwAuth)
+	user.GET("/export", adapter.ExportUsers)
 }
 
 func setUpPost(post *echo.Group, adapter *httpadapter.Adapter, mdwAuth echo.MiddlewareFunc) {
@@ -88,6 +89,7 @@ func setUpComment(comment *echo.Group, adapter *httpadapter.Adapter, mdwAuth ech
 
 func setUpAttachment(attachment *echo.Group, adapter *httpadapter.Adapter) {
 	attachment.POST("", adapter.UploadFile)
+	attachment.GET("", adapter.DownloadFile)
 }
 
 func setupMiddleware(e *echo.Echo) {

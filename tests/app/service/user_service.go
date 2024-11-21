@@ -25,3 +25,8 @@ func (m *MockUserService) Login(ctx context.Context, req *auraapi.LoginReq) (*au
 	args := m.Called(ctx, req)
 	return args.Get(0).(*auraapi.LoginRes), args.Error(1)
 }
+
+func (m *MockUserService) ExportUsers(ctx context.Context) error {
+	args := m.Called(ctx)
+	return args.Error(0)
+}
