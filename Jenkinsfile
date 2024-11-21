@@ -1,6 +1,10 @@
 pipeline {
   agent any
 
+  tools {
+    go '1.22.6'
+  }
+
   stages {
     stage('Checkout') {
       steps {
