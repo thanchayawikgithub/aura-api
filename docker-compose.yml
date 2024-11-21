@@ -12,16 +12,16 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     group_add:
       - docker
-  app:
-    container_name: aura-app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8081:8081"
-    depends_on:
-      - database
-      - redis
+  # app:
+  #   container_name: aura-app
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8081:8081"
+  #   depends_on:
+  #     - database
+  #     - redis
   database:
     container_name: aura-db
     image: postgres:latest
