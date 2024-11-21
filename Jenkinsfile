@@ -7,8 +7,6 @@ pipeline {
   }
 
   stages {
- 
-
     stage('Test') {
       steps {
         sh 'go test ./...'
@@ -26,8 +24,6 @@ pipeline {
         sh 'docker run -p 8081:8081 aura-api:latest'
       }
     }
-
-
   }
 
   post {
